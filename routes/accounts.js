@@ -1,20 +1,16 @@
-module.exports = function (app, passport) {
-  // import passport set up
-  require('../config/passport')(app, passport);
-  // import route controllers
-  const accounts = require('../controllers/accounts')(app, passport);
-  app.get('/login', accounts.getLogin);
+const router = require('express').Router();
+// import passport set up
+// import route controllers
+const accounts = require('../controllers/accounts');
 
-  app.post('/login', passport.authenticate('local', {
-        successRedirect: '/',
-        failureRedirect: '/accounts/login',
-        failureFlash: true,
-    })
-  );
+router.get('/login', accounts.getLogin);
 
-  app.get('/logout', accounts.logout);
+router.post('/login', accounts.handleLogin);
 
-  app.get('/sign-up', accounts.getSignUp);
+router.get('/logout', accounts.logout);
 
-  app.post('/sign-up', accounts.handleSignUp);
-}
+router.get('/sign-up', accounts.getSignUp);
+
+router.post('/sign-up', accounts.handleSignUp);
+
+module.exports = router;

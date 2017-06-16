@@ -106,11 +106,10 @@ app.get('/', function (req, res) {
   res.render('index');
 });
 
-const accountRouter = require('./routes/accounts')(app, passport);
+const accountRouter = require('./routes/accounts');
 
-// app.use('/accounts', accountRouter);
-app.use(app.router);
-accountRouter.initialize(app);
+app.use('/accounts', accountRouter);
+
 
 app.listen(3000, function () {
   console.log('listening on port 3000!')
