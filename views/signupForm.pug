@@ -1,0 +1,61 @@
+extends base.pug
+block content
+    .container
+        .row
+            form.col.s12(action='/accounts/sign-up', method='POST')
+                .row
+                    .center
+                        h4 Sign Up for a free account
+                    #errors
+                        if errors
+                            each err in errors
+                                .col.s12.card.materialize-red.white-text
+                                    p !{err.msg}
+                    .input-field.col.s12.l6
+                        i.material-icons.prefix email
+                        input#email.validate(type='email', name='email')
+                        label(for='email') Email
+                    .input-field.col.s12.l6
+                        i.material-icons.prefix account_circle
+                        input#surname.validate(type='text', name='surname')
+                        label(for='surname') Surname
+                    .input-field.col.s12.l6
+                        i.material-icons.prefix account_circle
+                        input#firstName.validate(type='text', name='firstName')
+                        label(for='firstName') First name
+                    .input-field.col.s12.l6
+                        i.material-icons.prefix account_circle
+                        input#username.validate(type='text', name='username')
+                        label(for='username') Username
+                    .input-field.col.s12.l6
+                        i.material-icons.prefix account_circle
+                        input#male.validate(type='radio', name='sex')
+                        label(for='male') male
+                        input#female.validate(type='radio', name='sex')
+                        label(for='female') female
+                    .input-field.col.s12.l6
+                        i.material-icons.prefix vpn_key
+                        input#password.validate(type='password', name='password')
+                        label(for='password') Password
+                    .input-field.col.s12.l6
+                        i.material-icons.prefix vpn_key
+                        input#password2.validate(type='password', name='password2')
+                        label(for='password2') Confirm Password
+                    .input-field.col.s12.l6
+                        i.material-icons.prefix school
+                        select#institution(name='institution')
+                            option(value='', disabled='', selected='') Choose your institution
+                            each institution in institutions
+                                option(value=institution.institution) #{institution.institution}
+                        label(for='institution') Institution
+                    .input-field.col.s12.l6
+                        i.material-icons.prefix account_box
+                        input#matriculationNumber.validate(type='text', name='matriculationNumber')
+                        label(for='matriculationNumber') Matriculation/Registration Number
+                    .input-field.col.s12.l6
+                        i.material-icons.prefix phone
+                        input#icon_telephone.validate(type='tel', name='telephone')
+                        label(for='icon_telephone') Telephone
+                    button.waves-effect.waves-light.btn.col.s6.offset-s3
+                        i.material-icons.right send
+                        | SIGN UP
