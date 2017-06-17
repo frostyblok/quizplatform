@@ -1,4 +1,5 @@
 const router = require('express').Router();
+const passport = require('passport');
 // import passport set up
 // import route controllers
 const accounts = require('../controllers/accounts');

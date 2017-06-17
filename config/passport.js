@@ -5,7 +5,6 @@ const bcrypt = require('bcryptjs');
 
 module.exports = function (passport) {
   passport.serializeUser(function(user, done) {
-    console.log('serializing');
     done(null, user._id);
   });
 
@@ -25,7 +24,7 @@ module.exports = function (passport) {
         bcrypt.compare(password, user.password, function (err, isMatch) {
           if (err) throw error;
           if (isMatch) {
-            return done(null, user);
+            return done(null, user, { message: "You are now logged in "});
           } else {
             return done(
               null,

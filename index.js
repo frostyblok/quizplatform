@@ -62,13 +62,12 @@ app.use(session({
     secret: 'secret',
     saveUninitialized: true,
     resave: true,
-    cookie: { secure: true }
 }));
 
 // Passport init
+require('./config/passport')(passport);
 app. use(passport.initialize());
 app.use(passport.session());
-require('./config/passport')(passport);
 
 
 // Express Validator
@@ -94,13 +93,14 @@ app.use(flash());
 
 // set some global variables
 app.use(function (req, res, next) {
-  res.locals.success_msg = req.flash('success_msg');
-  res.locals.error_msg = req.flash('error_msg');
-  res.locals.error = req.flash('error');
+  res.locals.messages = messages(req, res);
   res.locals.user = req.user || null;
   next();
 });
 
+// app.get('*', function (req, res, next) {
+//   next();
+// })
 
 app.get('/', function (req, res) {
   res.render('index');
