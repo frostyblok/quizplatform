@@ -17,6 +17,7 @@ const handleLogin = function (req, res, next) {
     failureRedirect: '/accounts/login',
     failureFlash: true
   }) (req, res, next);
+  console.log(req.user);
 }
 
 const logout = function (req, res, next) {

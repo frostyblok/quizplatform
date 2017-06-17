@@ -68,7 +68,7 @@ app.use(session({
 // Passport init
 app. use(passport.initialize());
 app.use(passport.session());
-require('./config/passport')(app, passport);
+require('./config/passport')(passport);
 
 
 // Express Validator
