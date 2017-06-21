@@ -16,7 +16,7 @@ html
                     ul#nav-mobile.side-nav
                         include includes/nav-items.pug
         main
-            //- != messages('messages', locals)
+            != messages('messages', locals)
             block content
         include includes/footer.pug
         include includes/scripts.pug
