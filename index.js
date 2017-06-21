@@ -94,9 +94,9 @@ app.use(flash());
 
 // set some global variables
 app.use(function (req, res, next) {
-  res.locals.success_msg = req.flash('success_msg');
-  res.locals.error_msg = req.flash('error_msg');
-  res.locals.error = req.flash('error');
+  // res.locals.success_msg = req.flash('success_msg');
+  // res.locals.error_msg = req.flash('error_msg');
+  // res.locals.error = req.flash('error');
   res.locals.user = req.user || null;
   next();
 });
@@ -107,8 +107,10 @@ app.get('/', function (req, res) {
 });
 
 const accountRouter = require('./routes/accounts');
-
 app.use('/accounts', accountRouter);
+
+const adminRouter = require('./routes/admin');
+app.use('/admin', adminRouter);
 
 
 app.listen(3000, function () {

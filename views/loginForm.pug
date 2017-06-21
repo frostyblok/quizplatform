@@ -2,22 +2,4 @@ extends base.pug
 block content
     .container
         .row
-            form.col.s12(action='/accounts/login', method='POST')
-                .row
-                    .center
-                        h3 Login
-                    .input-field.col.s12.l6
-                        i.material-icons.prefix account_circle
-                        input#username.validate(type='text', name='username')
-                        label(for='username') username
-                    .input-field.col.s12.l6
-                        i.material-icons.prefix vpn_key
-                        input#icon_prefix.validate(type='password', name='password')
-                        label(for='icon_prefix') Password
-                    .col.s12.l6
-                        button.waves-effect.waves-light.btn
-                            i.material-icons.left send
-                            | LOG IN
-                        span  Don't have an account? 
-                            a(href='/accounts/sign-up') Sign Up
-                    
+            include includes/loginForm.pug                    

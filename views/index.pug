@@ -1,7 +1,33 @@
 extends base.pug
 
 block content
-    .container
-        .row
-            .col.m4.s12.push-m8 login form goes here
-            .col.m8.s12.pull-m4 content goes here
+    .row.grey.lighten-4
+        img(src="/images/scholar.jpg" alt="scholar" width="100%")
+        .container
+            .col.m4.s12.push-m8
+                include includes/loginForm.pug
+            .col.m8.s12.pull-m4
+                p
+                | Scholars Cup is an inter-school competition that holds on 
+                | campuses in every quarter of the year. The competition is designed 
+                | to test students on various fields of study and works of life. 
+                | Questions range from various disciplines of study to everyday 
+                | politics, to sports, to the business and financial world, etc.
+                p
+                |The goal of Scholars Cup is to encourage students to be vast and
+                | voracious readers. Winner goes home with #200,000 and is placed
+                | on a Scholarship scheme. Runner-up goes home with #100,000 and
+                | is also placed on a Scholarship scheme. Interested participants
+                | must make sure they are first registered on this site.
+                a(href='/accounts/sign-up') (Register here)
+                p
+                | The best 50 participants on the deadline will be shortlisted
+                | for a physical test still on general knowledge, of which the
+                | best five would be selected to represent the school in the
+                | Grand finale. Your job as a contestant is to keep yourself on
+                | the top 50 spot until the deadline. If you are displaced from
+                | the top 50, it means you have to attempt the quiz again to
+                | regain a spot in the top 50. Top applicants will win amazing
+                | consolation prizes.
+                
+            .clear-fix
