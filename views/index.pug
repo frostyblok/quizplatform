@@ -1,12 +1,20 @@
 extends base.pug
 
 block content
-    .row.grey.lighten-4
-        img(src="/images/scholar.jpg" alt="scholar" width="100%")
-        .container
-            .col.m4.s12.push-m8
-                include includes/loginForm.pug
-            .col.m8.s12.pull-m4
+    .row
+        .jumbo
+            .container
+                != messages('messages', locals)
+                if user
+                    .col.s12.m6.white-text.jumbo-text
+                        h2 Welcome #{user.username}
+                else
+                    .col.s12.m6.white-text.jumbo-text
+                        h2 Welcome to Scholar
+                    .col.s12.m4.offset-m2.grey.lighten-4.faded
+                        include includes/loginForm.pug
+        .container.intro-text
+            .col.s12
                 p
                 | Scholars Cup is an inter-school competition that holds on 
                 | campuses in every quarter of the year. The competition is designed 

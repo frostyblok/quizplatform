@@ -1,7 +1,52 @@
+html, body {
+    background-color: #f5f5f5;
+}
+
 nav.navigation {
     background-color: #004d40;
 }
 
 .bottom-nav a {
     color: white;
+}
+
+main {
+    margin-bottom: 100px;
+
+}
+
+.jumbo {
+    background: url('/images/scholar.jpg') #f5f5f5 no-repeat center;
+    min-height: 600px;
+    /*filter: blur(1px);*/
+}
+
+.jumbo-text {
+    margin-top: 10%;
+
+}
+
+.faded {
+    opacity: 0.8;
+}
+
+.intro-text {
+    line-height: 2rem;
+    word-spacing: 2px;
+}
+
+.login-notice {
+    background-color: white;
+}
+
+
+footer {
+    right: 0;
+    bottom: 0;
+    left: 0;
+    line-height: 2rem;
+}
+
+.margin-less {
+    margin: 0;
 }

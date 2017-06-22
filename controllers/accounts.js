@@ -8,16 +8,16 @@ const User = require('../models/user');
 const Institiution = require('../models/institution');
 
 const getLogin = function (req, res, next) {
-  res.render('loginForm');
+  res.render('login');
 }
 
 const handleLogin = function (req, res, next) {
   passport.authenticate('local', {
     successRedirect: '/',
     failureRedirect: '/accounts/login',
-    failureFlash: true
-  }) (req, res, next);
-  console.log(req.user);
+    failureFlash: true,
+    successFlash: true,
+  })(req, res, next);
 }
 
 const logout = function (req, res, next) {

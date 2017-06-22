@@ -1,5 +1,5 @@
 const router = require('express').Router();
-// import passport set up
+
 // import route controllers
 const accounts = require('../controllers/accounts');
 
