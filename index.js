@@ -107,8 +107,10 @@ app.get('/', function (req, res) {
 });
 
 const accountRouter = require('./routes/accounts');
-
 app.use('/accounts', accountRouter);
+
+const adminRouter = require('./routes/admin');
+app.use('/admin', adminRouter);
 
 
 app.listen(3000, function () {
