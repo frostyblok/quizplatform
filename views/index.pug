@@ -5,14 +5,14 @@ block content
         .jumbo
             .container
                 != messages('messages', locals)
-                if user
-                    .col.s12.m6.white-text.jumbo-text
-                        h2 Welcome #{user.username}
-                else
-                    .col.s12.m6.white-text.jumbo-text
-                        h2 Welcome Great Scholar
-                    .col.s12.m4.offset-m2.grey.lighten-4.faded
-                        include includes/loginForm.pug
+                .col.s12.m6
+                    .btn-bar
+                        #buttons
+                            a#prev(href='#') &lt;
+                            a#next(href='#') &gt;
+
+                .col.s12.m4.offset-m2.grey.lighten-4.faded
+                    include includes/loginForm.pug
         .container.intro-text
             .col.s12
                 p

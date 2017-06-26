@@ -56,9 +56,11 @@ footer {
 }
 
 .messages {
-    position: absolute;
-    top: 60px;
-    left: 10px;
+    position: fixed;
+    /*top: 60px;*/
+    bottom: 0;
+    left: 0px;
+    z-index: 1000;
     padding: 20px;
     border-radius: 4px;
     font-size: 20px;
