@@ -1,0 +1,31 @@
+extends adminBase.pug
+block content
+    .row
+        .container
+            .col.s12
+                form.col.s12(action='/admin/news', method='POST')
+                    .row
+                        .container.center
+                            h5 Add News
+                        .input-field.col.s12
+                            input#title.validate(type='text', name='title')
+                            label(for='title') Title
+                        .input-field.col.s12
+                            textarea#body.materialize-textarea.validate(type='text', name='body')
+                            label(for='body') Body
+                        .col.s12
+                            button.btn.waves-effect.waves-light.teal
+                                | ADD NEWS
+
+            .col.s12
+                h3.center Latest News
+                hr 
+                each item in news
+                    .col.s12
+                        h5 #{item.title}
+                        p #{item.body}
+                        hr
+                else
+                    h5 Latest News
+                    p Nothing here for now
+        

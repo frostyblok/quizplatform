@@ -1,0 +1,15 @@
+extends adminBase.pug
+block content
+    .row
+        .container
+            .col.s12
+                h3.center Institutions List
+                hr 
+                each institution in institutions
+                    .col.s9
+                        p #{institution.institution}
+                    .col.s3
+                        a.delete-link.btn.waves-effect.waves-light.red(href='#' data-id=institution._id)
+                            i.material-icons delete
+                else
+                    p Nothing here yet

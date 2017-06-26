@@ -98,18 +98,29 @@ app.use(function (req, res, next) {
   next();
 });
 
-// app.get('*', function (req, res, next) {
-//   next();
-// })
 
 app.get('/', function (req, res) {
-  res.render('index');
+  if (!req.user)
+    req.flash("success", "Welcome Great Scholar")
+  res.render("index");
 });
 
 const accountRouter = require('./routes/accounts');
 app.use('/accounts', accountRouter);
 
 const adminRouter = require('./routes/admin');
+
+// admin authorization middleware
+app.use('/admin', function(req, res, next) {
+  if(!req.user) {
+    res.status(401);
+    res.redirect('/accounts/login');
+  } else if (!req.user.isStaff) {
+    res.status(403);
+    res.redirect('/');
+  }
+  next();
+})
 app.use('/admin', adminRouter);
 
 

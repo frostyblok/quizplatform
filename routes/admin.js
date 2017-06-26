@@ -1,22 +1,23 @@
 const router = require('express').Router();
-// import passport set up
+
 // import route controllers
 const admin = require('../controllers/admin');
 
-router.get('/', function (req, res) {
-  console.log('user is \n', req.user);
-  if (!req.user) {
-    res.redirect('/accounts/login');
-  } else if (!req.user.isStaff) {
-    res.redirect('/');
-  }
-  res.render('admin/admin');
-});
 
-router.post('/createPack', admin.createPack);
-
+// pack routes
+router.post('/create-pack', admin.createPack);
 router.get('/pack/:name', admin.getPack);
+router.post('/pack/:name', admin.addQuestionToPack);
 
-router.post('/pack/:name', admin.addQuestion);
+// news routes
+router.get('/news', admin.listNews);
+router.post('/news', admin.addNews);
+router.delete('/news/:id', admin.deleteNews);
+
+router.get('/institution', admin.getInstitutions);
+router.delete('/institution/:id', admin.deleteInstitution);
+
+// root admin route
+router.get('/', admin.getAdmin);
 
 module.exports = router;

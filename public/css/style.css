@@ -6,6 +6,10 @@ nav.navigation {
     background-color: #004d40;
 }
 
+.push-15 {
+    margin-left: 15px;
+}
+
 .bottom-nav a {
     color: white;
 }
@@ -17,13 +21,13 @@ main {
 
 .jumbo {
     background: url('/images/scholar.jpg') #f5f5f5 no-repeat center;
-    min-height: 600px;
+    min-height: 500px;
     /*filter: blur(1px);*/
 }
 
 .jumbo-text {
     margin-top: 10%;
-
+    background-color: rgba(240, 244, 226, 0.3);
 }
 
 .faded {
@@ -49,4 +53,15 @@ footer {
 
 .margin-less {
     margin: 0;
+}
+
+.messages {
+    position: absolute;
+    top: 60px;
+    left: 10px;
+    padding: 20px;
+    border-radius: 4px;
+    font-size: 20px;
+    background-color: rgb(2, 145, 94);
+    color: #ffffff;
 }

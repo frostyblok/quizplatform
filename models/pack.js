@@ -5,6 +5,7 @@ const Question = require('./question');
 const packSchema = mongoose.Schema({
   name: {
     type: String,
+    unique: true,
     required: true,
   },
 questions: [{
@@ -14,3 +15,5 @@ questions: [{
 });
 
 const Pack = mongoose.model('Pack', packSchema);
+
+module.exports= Pack;
