@@ -1,24 +1,71 @@
 $(document).ready(function () {
   $(".button-collapse").sideNav();
+
   $("select").material_select();
+
   $(".delete-link").on("click", function (e) {
     $target = $(e.target);
     const id = $target.attr("data-id");
-    if (confirm(
-        "Are you sure you want to delete this institution from " +
-        "list of institutions?")
-        ) {
-        $.ajax({
-          type: "DELETE",
-          url: "/admin/institution/" + id.toString(),
-          success: function (response) {
-            alert(response);
-            location.reload();
-          },
-          error: function (err) {
-            alert('An error occured. Unable to delete institution');
-          }
-        })
-      }
-    });
+    const itemType = $target.attr("data-type");
+    console.log(id);
+    console.log(itemType);
+    deleteItem(id, itemType);
+  })
+
+  countDown();
 });
+
+
+function deleteItem (id, itemType) {
+  if (confirm(
+      "Are you sure you want to delete this " + itemType +
+      " from list of " + itemType + "s?")
+      ) {
+      $.ajax({
+        type: "DELETE",
+        url: `/admin/${itemType}/${id.toString()}`,
+        success: function (response) {
+          alert(response);
+          location.reload();
+        },
+        error: function (err) {
+          alert(`An error occured. Unable to delete ${itemType}`);
+        }
+      })
+    }
+}
+
+function countDown() {
+  if (document.getElementById('timer')) {
+    var interval = setInterval(function() {
+      var timer = $('#timer');
+      var timerText = timer.html();
+      let timeArray = timerText.split(':');
+      var minutes = parseInt(timeArray[0], 10);
+      var seconds = parseInt(timeArray[1], 10);
+      seconds -= 1;
+      if (minutes < 0) return clearInterval(interval);
+      if (minutes < 10 && minutes.length != 2) minutes = '0' + minutes;
+      if (seconds < 0 && minutes != 0) {
+          minutes -= 1;
+          seconds = 59;
+      } else if (seconds < 10 && length.seconds != 2) {
+        seconds = '0' + seconds;
+      }
+      timer.html(minutes + ':' + seconds);
+
+      if (minutes == 0 && seconds < 30) {
+        timer.css("color", "red");
+      }
+
+      if (minutes == 0 && seconds == 0){
+        clearInterval(interval);
+        submitQuiz();
+      }
+    }, 1000)
+  }
+}
+
+function submitQuiz () {
+  $(".quizForm").submit()
+}

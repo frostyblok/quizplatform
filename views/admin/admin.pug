@@ -3,33 +3,38 @@ block content
     .row
         .container
             .admin-section
-                header
-                    h5 Packs
-                form.col.s12(action='/admin/create-pack', method='POST')
-                    .row
-                        .col.s12
-                            p Create new Question Pack
-                            .input-field
-                                input#pack-name.col.s10.validate(type='text',name='name')
-                                label(for='pack-name', data-error='wrong', data-success='right') Name
-                                button.btn-floating.s2.waves-effect.waves-light.teal
-                                    i.material-icons add
+                .container
+                    header
+                        h5 Packs
+                    form(action='/admin/create-pack', method='POST')
+                        .row
+                            .col.s12
+                                p Create new Question Pack
+                                .input-field
+                                    input#pack-name.col.s10.validate(type='text',name='name')
+                                    label(for='pack-name', data-error='wrong', data-success='right') Name
+                                    button.btn-floating.s2.waves-effect.waves-light.teal
+                                        i.material-icons add
+                    a(href='/admin/pack') View pack List
             .admin-section
-                header
-                    h5 News
-                    a.waves-effect.waves-light(href='/admin/news') Go to news section
+                .container
+                    header
+                        h5 News
+                        a.waves-effect.waves-light(href='/admin/news') Go to news section
             .admin-section
-                header
-                    h5 Institutions
-                form.col.s12(action='/admin/institution', method='POST')
-                    .row
-                        .col.s12
-                            .input-field
-                                input#institution-name.col.s10.validate(type='text',name='name')
-                                label(for='institution-name') Name
-                                button.btn-floating.s2.waves-effect.waves-light.teal
-                                    i.material-icons add
-                a.waves-effect.waves-light(href='/admin/institution') See institution list here
+                .container
+                    header
+                        h5 Institutions
+                    form.col.s12(action='/admin/institution', method='POST')
+                        .row
+                            .col.s12
+                                .input-field
+                                    input#institution-name.col.s10.validate(type='text',name='institution')
+                                    label(for='institution-name') Name
+                                    button.btn-floating.s2.waves-effect.waves-light.teal
+                                        i.material-icons add
+                    a.waves-effect.waves-light(href='/admin/institution') See institution list here
             .admin-section
-                header
-                    h5 
+                .container
+                    header
+                        h5 

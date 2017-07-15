@@ -5,11 +5,16 @@ block content
             .col.s12
                 h3.center Institutions List
                 hr 
-                each institution in institutions
-                    .col.s9
-                        p #{institution.institution}
-                    .col.s3
-                        a.delete-link.btn.waves-effect.waves-light.red(href='#' data-id=institution._id)
-                            i.material-icons delete
-                else
-                    p Nothing here yet
+                #institutions
+                    each institution in institutions
+                        .col.s12
+                            .col.s8
+                                p
+                                strong #{institution.institution}
+                            .col.s4
+                                a.control.edit-link.btn.waves-effect.waves-light.teal.darken-4(href=`/admin/institution/${institution._id}/edit`)
+                                    i.material-icons(data-id=institution._id) edit
+                                a.control.delete-link.btn.waves-effect.waves-light.red.darken-4(href='#' data-id=institution._id data-type='institution')
+                                    i.material-icons(data-id=institution._id data-type='institution') delete
+                    else
+                        p Nothing here yet.

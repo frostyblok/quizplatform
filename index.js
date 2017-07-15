@@ -14,7 +14,7 @@ const passport = require('passport');
 const uuid = require('uuid');
 
 const dbConfig = require('./config/db');
-
+const middlewares = require('./utils/middlewares');
 
 
 // database layer
@@ -22,7 +22,7 @@ mongoose.connect(dbConfig.database);
 const db = mongoose.connection;
 
 db.on('error', function (err) {
-  console.bind(err);
+  console.log(err);
 });
 
 db.once('open', function () {
@@ -64,11 +64,6 @@ app.use(session({
     resave: true,
 }));
 
-// Passport init
-require('./config/passport')(passport);
-app. use(passport.initialize());
-app.use(passport.session());
-
 
 // Express Validator
 app.use(expressValidator({
@@ -88,6 +83,12 @@ app.use(expressValidator({
   }
 }));
 
+// Passport init
+require('./config/passport')(passport);
+app. use(passport.initialize());
+app.use(passport.session());
+
+
 // Connect Flash
 app.use(flash());
 
@@ -100,8 +101,6 @@ app.use(function (req, res, next) {
 
 
 app.get('/', function (req, res) {
-  if (!req.user)
-    req.flash("success", "Welcome Great Scholar")
   res.render("index");
 });
 
@@ -110,9 +109,10 @@ app.use('/accounts', accountRouter);
 
 const adminRouter = require('./routes/admin');
 
-// admin authorization middleware
+admin authorization middleware
 app.use('/admin', function(req, res, next) {
   if(!req.user) {
+    req.session['redirectTo'] = '/admin' + req.path;
     res.status(401);
     res.redirect('/accounts/login');
   } else if (!req.user.isStaff) {
@@ -121,8 +121,20 @@ app.use('/admin', function(req, res, next) {
   }
   next();
 })
+
 app.use('/admin', adminRouter);
 
+const siteRouter = require('./routes/site');
+app.use('/', siteRouter);
+
+
+app.use(function (err, req, res, next) {
+  console.error(err.stack);
+  let status = 500;
+  let message = "Something went wrong";
+  res.status(status);
+  res.render("error", { status, message });
+})
 
 app.listen(3000, function () {
   console.log('listening on port 3000!')

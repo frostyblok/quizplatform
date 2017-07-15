@@ -6,6 +6,16 @@ nav.navigation {
     background-color: #004d40;
 }
 
+#nav-mobile li a {
+    color: #ffffff;
+    font-size: 1.2rem;
+    font-weight: 400;
+}
+
+#nav-mobile li > a:hover {
+    background-color: #004d40;
+}
+
 .push-15 {
     margin-left: 15px;
 }
@@ -16,18 +26,35 @@ nav.navigation {
 
 main {
     margin-bottom: 100px;
+}
 
+.flex-container {
+  padding: 0;
+  margin: 0;
+  width: 100%;
+  display: -webkit-box;
+  display: -moz-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-flow: row wrap;
+  flex-flow: row wrap;
+  justify-content: center;
 }
 
 .jumbo {
     background: url('/images/scholar.jpg') #f5f5f5 no-repeat center;
     min-height: 500px;
-    /*filter: blur(1px);*/
 }
 
 .jumbo-text {
-    margin-top: 10%;
-    background-color: rgba(240, 244, 226, 0.3);
+    color: #004d40;
+    background-color: rgba(238, 238, 238, 0.5);
+}
+
+@media only screen and (min-width: 601px) {
+    .jumbo-text h2 {
+        margin: 65px 20px;
+    }
 }
 
 .faded {
@@ -37,6 +64,8 @@ main {
 .intro-text {
     line-height: 2rem;
     word-spacing: 2px;
+    font-weight: 300;
+    font-size: 1.2rem;
 }
 
 .login-notice {
@@ -51,19 +80,55 @@ footer {
     line-height: 2rem;
 }
 
+footer h5 {
+    font-weight: bold;
+}
+
+footer p, footer ul {
+    font-weight: 100;
+}
+
+.footer-container {
+    padding-top: 40px;
+}
+
 .margin-less {
     margin: 0;
 }
 
-.messages {
-    position: fixed;
-    /*top: 60px;*/
-    bottom: 0;
-    left: 0px;
+.message {
     z-index: 1000;
-    padding: 20px;
-    border-radius: 4px;
+    padding: 5px 20px;
     font-size: 20px;
-    background-color: rgb(2, 145, 94);
     color: #ffffff;
+    background-color: rgb(2, 145, 94);
+}
+
+.success-message {
+    color: #ffffff;
+}
+
+.failure-message, .error-message {
+    background-color: #F44336;
+    color: #ffffff;
+}
+
+.control {
+    margin: 5px;
+}
+
+.admin-section {
+    border: 1px solid #bbb;
+    border-radius: 4px;
+    margin: 20px 0;
+    padding: 20px;
+    box-shadow: 0 0 15px 5px rgba(0, 0, 0, 0.1);
+}
+
+.admin-section header {
+    color: teal;
+}
+
+.admin-section header h5 {
+    font-weight: bold;
 }

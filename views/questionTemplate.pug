@@ -1,0 +1,15 @@
+each question, index in pack.questions
+    .col.s12
+        p #{index + 1}. #{question.question}
+        .input-field.col.s12
+            input(type='radio' id=`${index}A` name=index value= question.optionA)
+            label(for=`${index}A`) #{question.optionA}
+        .input-field.col.s12
+            input(type='radio' id=`${index}B` name=index value= question.optionB)
+            label(for=`${index}B`) #{question.optionB}
+        .input-field.col.s12
+            input(type='radio' id=`${index}C` name=index value= question.optionC)
+            label(for=`${index}C`) #{question.optionC}
+        .input-field.col.s12
+            input(type='radio' id=`${index}D` name=index value= question.optionD)
+            label(for=`${index}D`) #{question.optionD}

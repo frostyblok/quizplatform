@@ -17,7 +17,7 @@ block content
                         label(for='email') Email
                     .input-field.col.s12.l6
                         i.material-icons.prefix account_circle
-                        input#surname.validate(type='text', name='surname')
+                        input#surname.validate(type='text', name='surName')
                         label(for='surname') Surname
                     .input-field.col.s12.l6
                         i.material-icons.prefix account_circle
@@ -29,9 +29,9 @@ block content
                         label(for='username') Username
                     .input-field.col.s12.l6
                         i.material-icons.prefix account_circle
-                        input#male.validate(type='radio', name='sex')
+                        input#male.validate(type='radio', name='sex' value='male')
                         label(for='male') male
-                        input#female.validate(type='radio', name='sex')
+                        input#female.validate(type='radio', name='sex' value='female')
                         label(for='female') female
                     .input-field.col.s12.l6
                         i.material-icons.prefix vpn_key
@@ -50,7 +50,7 @@ block content
                         label(for='institution') Institution
                     .input-field.col.s12.l6
                         i.material-icons.prefix account_box
-                        input#matriculationNumber.validate(type='text', name='matriculationNumber')
+                        input#matriculationNumber(type='text', name='matriculationNumber')
                         label(for='matriculationNumber') Matriculation/Registration Number
                     .input-field.col.s12.l6
                         i.material-icons.prefix phone

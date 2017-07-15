@@ -6,13 +6,15 @@ const institutionSchema =  mongoose.Schema ({
   institution: {
     type: String,
     required: true,
-    users: [{
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'User',
-    }],
   },
 });
 
+institutionSchema.virtual('users', {
+  ref: 'User',
+  localField: '_id',
+  foreignField: 'Institution',
+  justOne: false,
+})
 
 const Institution = mongoose.model('Institution', institutionSchema);
 module.exports = Institution;

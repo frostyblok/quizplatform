@@ -8,17 +8,17 @@ html
         header
             nav.teal.darken-4
                 .nav-wrapper
-                    a.brand-logo.push-15(href='/') Scholar
+                    a.brand-logo.push-15(href='/') Great Scholar
                     a.button-collapse(href='#footer-navigation', data-activates='nav-mobile')
                         i.material-icons menu
                     ul.right.hide-on-med-and-down
                         include includes/nav-items.pug
-                    ul#nav-mobile.side-nav
+                    ul#nav-mobile.side-nav.teal.darken-2
                         include includes/nav-items.pug
         main
 
+            != messages('messages', locals)
             block content
-                != messages('messages', locals)
         include includes/footer.pug
         include includes/scripts.pug
 

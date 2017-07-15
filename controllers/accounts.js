@@ -12,12 +12,9 @@ const getLogin = function (req, res, next) {
 }
 
 const handleLogin = function (req, res, next) {
-  passport.authenticate('local', {
-    successRedirect: '/',
-    failureRedirect: '/accounts/login',
-    failureFlash: true,
-    successFlash: true
-  })(req, res, next);
+  var redirectTo = req.session.redirectTo || '/';
+  delete req.session.redirectTo;
+  res.redirect(redirectTo);
 }
 
 const logout = function (req, res, next) {
@@ -36,7 +33,7 @@ const getSignUp = function (req, res, next) {
 
 const handleSignUp = function (req, res, next) {
   const email = req.body.email;
-  const surname = req.body.surname;
+  const surName = req.body.surName;
   const firstName = req.body.firstName;
   const username = req.body.username;
   const sex = req.body.sex;
@@ -47,7 +44,7 @@ const handleSignUp = function (req, res, next) {
   const password2 = req.body.password2;
 
   req.checkBody('email', 'A valid email is required').isEmail();
-  req.checkBody('surname', 'Please provide your surname').notEmpty();
+  req.checkBody('surName', 'Please provide your surname').notEmpty();
   req.checkBody('firstName', 'Please provide your first name').notEmpty();
   req.checkBody('sex', 'You have not selected your sex').notEmpty()
   req.checkBody('username', 'Username cannot be empty').notEmpty();
@@ -74,7 +71,7 @@ const handleSignUp = function (req, res, next) {
           return;
         }
         let newUser = new User({email,
-                                surname,
+                                surName,
                                 firstName,
                                 username,
                                 sex,

@@ -1,5 +1,8 @@
 li
   a(href='/') Home
+if user && user.isStaff
+    li
+      a(href='/admin') Admin
 if user
     li
       a(href='/accounts/logout') Log Out
@@ -13,7 +16,7 @@ li
 li
   a(href='/grants') Grants
 li
-  a(href='/vrtual-quiz') Virtual Quiz
+  a(href='/virtual-quiz') Virtual Quiz
 li
   a(href='/news') News
 li
