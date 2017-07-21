@@ -18,8 +18,8 @@ const tokenSchema = mongoose.Schema({
     ref: 'User',
   },
   serial: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Serial',
+    type: Number,
+    index: true,
   }
 });
 

@@ -421,6 +421,7 @@ const generateToken = (maxUse) => {
   const token =  Math.floor(Math.random() * (max -min) + min);
   return Token.count({ token }).then( count => {
     if ( count > 0 ) {
+      console.log("token Collision");
       generateToken(maxUse);
     } else {
       return Token.create({ token, maxUse });
@@ -439,38 +440,36 @@ const generateSerial = (tokenId) => {
   const max = 9999999999999999;
   let serial =  Math.floor(Math.random() * (max - min) + min);
   // check for existence of serial without retrieving it
-  return Serial.count({ serial }).then(count => {
-    if (count > 0) {
-      generateSerial(tokenId);
+  return Token.count({ serial }).then( count => {
+    if ( count > 0 ) {
+      console.log("oops! Serial Collision");
+      generateSerial(maxUse);
     } else {
-      return Serial.create({ serial });
-    }
-  }).then(savedSerial => {
-    Token.findOneAndUpdate(
-      { _id: tokenId },
-      { $set: { serial: savedSerial._id } },
-      { new: true},
-      function (err, token) {
-        if (err) {
-          console.log(err);
-          return;
+      return Token.findOneAndUpdate(
+        { _id: tokenId }, { $set: { serial } }
+      ).exec(
+        function (err, token) {
+          if (err) {
+            console.log(err.stack);
+            return;
+          }
+          return token;
         }
-        // TODO: Hook write process to this part.
-        console.log("token here => ", token.token); // hook write process here.
-
-        return token;
-      }
-    )
-  }).catch(err => {
-    console.log(err)
-    return
+      )
+    }
   })
 }
 
 
+const printTokens = function (total, bulk) {
+  if (!bulk) return;
+
+}
+
 const createToken = function (req, res) {
   console.log("about to start generating token and serials");
 // fetch these values from req.bodies or paremeters
+  let count = 0
   let total = 10;
   let maxUse = 5;
   let tokens = '';
@@ -480,11 +479,13 @@ const createToken = function (req, res) {
     (callback) => { // def callback
       generateToken(maxUse).then(token => {
         total--;
+        count++;
         callback(null, token);
       }).catch(err => callback(err));
     },
     function callback (err, token) {
       if (err) throw err;
+      console.log("DONE :", count);
       // Loop complete, issue callback or promise
     }
   );
