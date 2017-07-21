@@ -7,12 +7,20 @@ const User = require('../models/user');
 // import Institiution model Object
 const Institiution = require('../models/institution');
 
+// import Token model Object
+const Token = require('../models/token');
+
+// import Serial model Object
+const Serial = require('../models/serial');
+
+
+
 const getLogin = function (req, res, next) {
   res.render('login');
 }
 
 const handleLogin = function (req, res, next) {
-  var redirectTo = req.session.redirectTo || '/';
+  var redirectTo = req.session.redirectTo || '/dashboard';
   delete req.session.redirectTo;
   res.redirect(redirectTo);
 }
@@ -90,7 +98,9 @@ const handleSignUp = function (req, res, next) {
                 return;
               } else {
                 req.flash('success', 'Registration was successful');
-                res.redirect('/accounts/login');
+                passport.authenticate('local')(req, res, function () {
+                  res.redirect('/dashboard');
+                })
               }
             })
           })
@@ -100,4 +110,46 @@ const handleSignUp = function (req, res, next) {
 }
 
 
-module.exports = { getLogin, handleLogin, logout, getSignUp, handleSignUp }
+const tokenRegistration = function (req, res) {
+  let token = req.body.token;
+  req.checkBody('token', 'Please enter a valid 12 digit PIN')
+               .matches(/(\d){10}/);
+  req.sanitizeBody("token").trim();
+  req.sanitizeBody("token").escape();
+  const errors = req.validationErrors();
+  console.log(errors);
+  if (errors) {
+    req.flash("error", errors[0].msg)
+    res.redirect("/dashboard");
+    return;
+  }
+  Token.findOne({ token }, function (err, token){
+    if (err) {
+      console.log(err);
+      return
+    } else {
+      console.log("token found");
+      User.findByIdAndUpdate(
+        { _id: req.user._id },
+        { token : token._id },
+        function ( err, user) {
+          if (err) {
+            console.log(err);
+          } else {
+            console.log(user.token);
+            res.end('done');
+          }
+        }
+      )
+    }
+  })
+}
+
+module.exports = {
+                  getLogin,
+                  handleLogin,
+                  logout,
+                  getSignUp,
+                  handleSignUp,
+                  tokenRegistration,
+                }

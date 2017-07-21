@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 
 const Institution = require('./institution');
+const Token = require('./token');
 
 const userSchema =  mongoose.Schema ({
   email: {
@@ -40,6 +41,14 @@ const userSchema =  mongoose.Schema ({
     ref: 'Institution',
     required: true,
   },
+  isRegistered: {
+    type: Boolean,
+    default: false,
+  },
+  token: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Token',
+  },
   dateJoined: {
     type: Date,
     default: Date.now,
@@ -54,7 +63,23 @@ const userSchema =  mongoose.Schema ({
     type: Boolean,
     required: true,
     default: false,
-  }
+  },
+  virtualQuiz: {
+    score: Number,
+    time: Number,
+  },
+  scholarsCup: {
+    score: Number,
+    time: Number,
+  },
+  scholarsBowl: {
+    score: Number,
+    time: Number,
+  },
+  educationGrant: {
+    score: Number,
+    time: Number,
+  },
 });
 
 

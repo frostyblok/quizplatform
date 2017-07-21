@@ -8,16 +8,19 @@ const User = require("../models/user");
 const helpers = require("../utils/helpers");
 
 
-function allowAccess (req, res, next) {
-  if(!req.user) {
-    res.status(401);
-    res.redirect('/accounts/login');
-  } else if (!req.user.registered) {
-    res.status(403);
-    res.redirect('/');
-  }
-  next();
+const getDashBoard = function (req, res) {
+  Institution.findById({ _id: req.user.institution },
+    function (err, institution) {
+      if (err) {
+        req.flash("error", "Unable to fetch Institution name");
+      }
+      let registrationEndpoint = '/accounts/token-auth';
+      console.log("sending dashboard");
+      res.render("dashboard", { institution, endpoint: registrationEndpoint });
+    }
+  )
 }
+
 
 
 const newsList = function (req, res) {
@@ -30,6 +33,33 @@ const newsList = function (req, res) {
     }
   })
 };
+
+// TODO:
+const getQuizAuth = function (req, res) {
+  let redirectTo = req.session.redirectTo;
+  switch (redirectTo) {
+    case "/virtual-quiz":
+
+      break;
+    case "/scholars-cup":
+
+      break;
+    case "/scholars-bowl":
+
+      break;
+    case "/grants":
+
+      break;
+    default:
+
+  }
+  res.render("includes/tokenAuthenticationForm")
+}
+
+// TODO:
+const handleQuizAuth = function (req, res) {
+
+}
 
 
 const getQuiz = function (req, res) {
@@ -125,20 +155,25 @@ const saveScore = (user, score, time) => {
 
 
 const getRanking = function (req, res) {
-  User.find({}).sort({score: -1, time: 1}).limit(50)
-  .exec(function (err, users) {
-    if (err) {
-      console.log(err);
-    } else {
-      res.render('ranking', {users});
-    }
-  });
+  User.find({institution: req.user.institution})
+      .sort({score: -1, time: 1})
+      .limit(50)
+      .exec(function (err, users) {
+        if (err) {
+          console.log(err);
+        } else {
+          res.render('ranking', {users});
+        }
+      });
 }
 
 
 module.exports = {
+  getDashBoard,
   newsList,
   getRanking,
+  getQuizAuth,
+  handleQuizAuth,
   getQuiz,
   evaluateQuiz,
 };

@@ -1,3 +1,9 @@
+const appendFile = require('fs').appendFile;
+
+
+// import whilst from 'async/whilst';
+const whilst = require('async').whilst;
+
 const Pack = require("../models/pack");
 const Question = require("../models/question");
 const NewsItem = require("../models/news");
@@ -21,6 +27,30 @@ const getUsers = function (req, res) {
       res.render("users-list", { users });
     }
   })
+}
+
+
+const getUserCount = function (req, res) {
+  let institution = req.params.institution;
+  if (institution) {
+    User.count({institution}, function (err, count) {
+      if (err) {
+        req.flash("failure", "error fetching users");
+        res.render("admin/admin");
+      } else {
+        res.render("users", { count, institution });
+      }
+    })
+  } else {
+    User.count({}, function (err, count) {
+      if (err) {
+        req.flash("failure", "error fetching users");
+        res.render("admin/admin");
+      } else {
+        res.render("users", { count });
+      }
+    })
+  }
 }
 
 
@@ -146,15 +176,18 @@ const createPack = function (req, res) {
 }
 
 
-const getPack = function (req, res) {
+const getPack = function (req, res, next) {
   let name = req.params.name;
   Pack.findOne({ name }).populate('questions').exec(function (err, pack) {
     if (err) {
-      console.log(err);
       req.flash("failure", "unable to fetch question pack");
       res.redirect("/admin");
     } else {
-      res.render("admin/pack", {pack});
+      if (pack)
+        res.render("admin/pack", {pack});
+      else {
+        next()
+      }
     }
   })
 };
@@ -291,8 +324,8 @@ const addNews = function (req, res) {
   const title = req.body.title;
   const body = req.body.body;
 
-  req.checkBody("title", "Please provide title for news").notEmpty().isAlpha();
-  req.checkBody("body", "Please provide news body").notEmpty().isAlpha();
+  req.checkBody("title", "Please provide title for news").notEmpty();
+  req.checkBody("body", "Please provide news body").notEmpty();
 
   req.sanitizeBody("title").trim();
   req.sanitizeBody("title").escape();
@@ -347,11 +380,12 @@ const editNews = function (req, res, next) {
   const _id = req.params.id;
   let title = req.body.title;
   let body = req.body.body;
+  console.log(title, body);
 
-  req.checkBody("title", "Title cannot be empty").notEmpty().isAlpha();
+  req.checkBody("title", "Title cannot be empty").notEmpty();
   req.sanitizeBody("title").trim();
   req.sanitizeBody("title").escape();
-  req.checkBody("body", "News content cannot be empty").notEmpty().isAlpha();
+  req.checkBody("body", "News content cannot be empty").notEmpty();
   req.sanitizeBody("body").trim();
   req.sanitizeBody("body").escape();
 
@@ -380,51 +414,96 @@ const editNews = function (req, res, next) {
 
 // Authentication token section
 
-const generateToken = function (number) {
-  // 12 digit token numbers
+const generateToken = (maxUse) => {
+  // 12 digit token numbers. 9e+11 possibilities
   const min = 100000000000;
   const max = 999999999999;
   const token =  Math.floor(Math.random() * (max -min) + min);
-  // ensure token doesn't exit exist in db before saving
-  Token.count({ token }, function (err, count) {
-    if (count > 0) {
-      generateToken() ;
+  return Token.count({ token }).then( count => {
+    if ( count > 0 ) {
+      generateToken(maxUse);
     } else {
-      let newToken = new Token({ token });
-      newToken.save(function (err, savedToken) {
-        if (err) {
-          console.log(err);
-          return;
-        } else {
-          generateSerial(savedToken._id);
-        }
-      })
+      return Token.create({ token, maxUse });
     }
+  }).then(savedToken => {
+    return generateSerial(savedToken._id)
+  }).catch(err => {
+    console.log(err.stack);
+    return;
   })
 }
 
-
-const generateSerial = function (tokenId) {
-  // 16 digit serial numbers
+const generateSerial = (tokenId) => {
+  // 16 digit serial numbers. 9e+15 possibilities
   const min = 1000000000000000;
   const max = 9999999999999999;
   let serial =  Math.floor(Math.random() * (max - min) + min);
   // check for existence of serial without retrieving it
-  Serial.count({ serial }, function (err, count) {
+  return Serial.count({ serial }).then(count => {
     if (count > 0) {
       generateSerial(tokenId);
     } else {
-      let newSerial = new Serial({ serial });
-      newSerial.token = tokenId;
-      newSerial.save(function (err, savedSerial) {
+      return Serial.create({ serial });
+    }
+  }).then(savedSerial => {
+    Token.findOneAndUpdate(
+      { _id: tokenId },
+      { $set: { serial: savedSerial._id } },
+      { new: true},
+      function (err, token) {
         if (err) {
           console.log(err);
           return;
         }
-      })
-    }
+        // TODO: Hook write process to this part.
+        console.log("token here => ", token.token); // hook write process here.
+
+        return token;
+      }
+    )
+  }).catch(err => {
+    console.log(err)
+    return
   })
 }
+
+
+const createToken = function (req, res) {
+  console.log("about to start generating token and serials");
+// fetch these values from req.bodies or paremeters
+  let total = 10;
+  let maxUse = 5;
+  let tokens = '';
+  var filename = Date.now().toString() + '.txt';
+  whilst(
+    () => total > 0,
+    (callback) => { // def callback
+      generateToken(maxUse).then(token => {
+        total--;
+        callback(null, token);
+      }).catch(err => callback(err));
+    },
+    function callback (err, token) {
+      if (err) throw err;
+      // Loop complete, issue callback or promise
+    }
+  );
+  req.flash("success", "tokens created");
+  res.redirect("/admin");
+}
+
+
+const bulkCreateTokens = function (total, maxUse) {
+  var filename = Date.now().toString + '.txt';
+  const appendFile = require('fs.appendFile');
+  while (total > 0) {
+    let token = generateToken().toString() + '\n';
+    appendFile(filename, token, function (err) {
+      if (err) console.error(err);
+    });
+  }
+}
+
 
 
 module.exports = {
@@ -447,4 +526,69 @@ module.exports = {
   deleteNews,
   generateToken,
   generateSerial,
+  createToken,
 };
+
+
+
+
+// const generateToken = function (maxUse) {
+//   // 12 digit token numbers. 9e+11 possibilities
+//   const min = 100000000000;
+//   const max = 999999999999;
+//   const token =  Math.floor(Math.random() * (max -min) + min);
+//   // ensure token doesn't exit exist in db before saving
+//   Token.count({ token }, function (err, count) {
+//     if (count > 0) {
+//       generateToken() ;
+//     } else {
+//       let newToken = new Token({ token, maxUse });
+//       newToken.save(function (err, savedToken) {
+//         if (err) {
+//           console.log(err);
+//           return;
+//         } else {
+//           generateSerial(savedToken._id);
+//           console.log("saved token is =>", savedToken.token);
+//           return savedToken.token;
+//         }
+//       })
+//     }
+//   })
+// }
+
+
+
+// const generateSerial = function (tokenId) {
+//   // 16 digit serial numbers. 9e+15 possibilities
+//   const min = 1000000000000000;
+//   const max = 9999999999999999;
+//   let serial =  Math.floor(Math.random() * (max - min) + min);
+//   // check for existence of serial without retrieving it
+//   Serial.count({ serial }, function (err, count) {
+//     if (count > 0) {
+//       generateSerial(tokenId);
+//     } else {
+//       let newSerial = new Serial({ serial });
+//       newSerial.token = tokenId;
+//       newSerial.save(function (err, savedSerial) {
+//         if (err) {
+//           console.log(err);
+//           return;
+//         }
+//         Token.findOneAndUpdate(
+//           { _id: tokenId },
+//           { serial: savedSerial._id },
+//           function (err, token) {
+//             if (err) {
+//               console.error(err);
+//               return;
+//             }
+//           }
+//         )
+//       })
+//     }
+//   })
+// }
+//
+//

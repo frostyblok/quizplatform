@@ -24,6 +24,11 @@ router.get('/institution/:id/edit', admin.getEditInstitution);
 router.post('/institution/:id/edit', admin.editInstitution);
 router.delete('/institution/:id', admin.deleteInstitution);
 
+// router.get('/token', admin.showToken);
+router.get('/token', admin.createToken);
+
+
+
 // root admin route
 router.get('/', admin.getAdmin);
 

@@ -14,4 +14,9 @@ footer
                 p Phone: 07069213833, 08185539466	
                 p E-mail: jvecsoultions@gmail.com
         .col.s12.black
-            p.right &copy jvec solutions 2016.
+            - var inception = 2017
+            - var year = new Date().getFullYear()
+            p.right &copy jvec solutions !{inception} 
+                if year > inception
+                    span - !{year}
+            

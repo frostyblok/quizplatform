@@ -3,6 +3,7 @@ const path = require('path');
 
 const express = require('express');
 const mongoose = require('mongoose');
+mongoose.Promise = global.Promise;
 const bodyParser = require('body-parser');
 const expressValidator = require('express-validator');
 const flash = require('connect-flash');
@@ -14,7 +15,7 @@ const passport = require('passport');
 const uuid = require('uuid');
 
 const dbConfig = require('./config/db');
-const middlewares = require('./utils/middlewares');
+const { ensureAdmin } = require('./utils/middlewares');
 
 
 // database layer
@@ -109,19 +110,7 @@ app.use('/accounts', accountRouter);
 
 const adminRouter = require('./routes/admin');
 
-admin authorization middleware
-app.use('/admin', function(req, res, next) {
-  if(!req.user) {
-    req.session['redirectTo'] = '/admin' + req.path;
-    res.status(401);
-    res.redirect('/accounts/login');
-  } else if (!req.user.isStaff) {
-    res.status(403);
-    res.redirect('/');
-  }
-  next();
-})
-
+// app.use('/admin', ensureAdmin, adminRouter);
 app.use('/admin', adminRouter);
 
 const siteRouter = require('./routes/site');
@@ -135,6 +124,14 @@ app.use(function (err, req, res, next) {
   res.status(status);
   res.render("error", { status, message });
 })
+
+app.use(function (req, res, next) {
+  res.status(404);
+  let status = 404;
+  let message = "Sorry can't find that!";
+  res.render("error", { status, message });
+})
+
 
 app.listen(3000, function () {
   console.log('listening on port 3000!')

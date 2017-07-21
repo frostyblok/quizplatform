@@ -1,0 +1,11 @@
+-var url = endpoint || '/quiz-auth'
+form.col.s12(action=url, method='POST')
+    .row.col.m6.offset-m3
+        .container.center
+            .input-field.col.s12.teal-text
+                i.material-icons.prefix vpn_key
+                input#icon_prefix.validate(type='text', name='token')
+                button.waves-effect.waves-light.btn.col.s6.offset-s3
+                    | SUBMIT
+                    i.material-icons.right send
+                label(for='icon_prefix') PIN

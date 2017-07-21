@@ -7,10 +7,8 @@ $(document).ready(function () {
     $target = $(e.target);
     const id = $target.attr("data-id");
     const itemType = $target.attr("data-type");
-    console.log(id);
-    console.log(itemType);
     deleteItem(id, itemType);
-  })
+  });
 
   countDown();
 });

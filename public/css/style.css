@@ -132,3 +132,40 @@ footer p, footer ul {
 .admin-section header h5 {
     font-weight: bold;
 }
+
+.dashboard {
+    margin: 10px 20px;
+    padding: 0 !important;
+    border: 1px solid teal;
+    border-radius: 4px;
+}
+
+.dashboard h6 {
+    padding: 10px 20px;
+}
+
+.dashboard a {
+    text-decoration: underline;
+}
+
+.dash {
+    min-height: 50px;
+    padding: 5px;
+}
+
+
+#timer {
+    color: white;
+    background-color: teal;
+    position: fixed;
+    right: 0;
+    top: 10rem;
+    padding: 5px;
+}
+
+
+/* http error pages*/
+.error-code {
+    font-size: 10rem;
+    letter-spacing: 0.5rem;
+}
