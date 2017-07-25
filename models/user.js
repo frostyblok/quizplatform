@@ -45,10 +45,6 @@ const userSchema =  mongoose.Schema ({
     type: Boolean,
     default: false,
   },
-  token: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Token',
-  },
   dateJoined: {
     type: Date,
     default: Date.now,

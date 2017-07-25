@@ -5,8 +5,10 @@ block content
             .admin-section
                 .container
                     header
-                        h5
-                        a.waves-effect.waves-light(href='/admin/token') Create Token
+                        h5 Users
+                        p Total Number of Sign Ups: 
+                            strong.red-text !{userCount}
+                        a.waves-effect.waves-light(href='') Not ready
             .admin-section
                 .container
                     header
@@ -43,5 +45,16 @@ block content
             .admin-section
                 .container
                     header
-                        h5 
-                        a.waves-effect.waves-light(href='') Not ready
+                        h5 Tokens
+                        form#create-token-form(action='', method='POST')
+                            .row
+                                .col.s12
+                                    .input-field
+                                        input#total.col.s10.validate(type='number',name='total',placeholder='Total number of tokens' min='1')
+                                .col.s12
+                                    .input-field
+                                        input#maxUse.col.s10.validate(type='number', name='maxUse', placeholder='Max Use per token', min='1')
+                                .col.s12
+                                    .input-field
+                                        button#create-token-btn.btn.waves-effect.waves-light.teal
+                                            | Create Tokens

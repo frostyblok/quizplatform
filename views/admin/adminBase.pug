@@ -2,7 +2,7 @@ doctype
 html
     head
         include ../includes/head.pug
-            
+
     body
         header
             nav.teal.darken-4
@@ -18,3 +18,4 @@ html
             != messages('messages', locals)
             block content
         include ../includes/scripts.pug
+        script(type='text/javascript', src='/js/admin.js')

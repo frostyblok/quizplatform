@@ -1,8 +1,6 @@
 const appendFile = require('fs').appendFile;
-
-
 // import whilst from 'async/whilst';
-const whilst = require('async').whilst;
+const async = require('async');
 
 const Pack = require("../models/pack");
 const Question = require("../models/question");
@@ -17,8 +15,8 @@ const Serial = require("../models/serial");
 const helpers = require("../utils/helpers");
 
 
-const getUsers = function (req, res) {
-  User.find({}, function(err, users) {
+function getUsers (req, res) {
+  User.count({}, function(err, users) {
     if (err) {
       console.log(err);
       req.flash("failure", "error fetching users");
@@ -30,7 +28,7 @@ const getUsers = function (req, res) {
 }
 
 
-const getUserCount = function (req, res) {
+function getUserCount (req, res) {
   let institution = req.params.institution;
   if (institution) {
     User.count({institution}, function (err, count) {
@@ -54,15 +52,17 @@ const getUserCount = function (req, res) {
 }
 
 
-const getAdmin = function (req, res) {
-  res.render("admin/admin");
+function getAdmin (req, res, next) {
+  let users = User.count({}).exec();
+  users.then((userCount) => {
+    res.render("admin/admin", { userCount });
+  }).catch((err)=> next(err));
 }
 
 
 // Institution
 
-const addInstitution = function (req, res) {
-  console.log(req.body);
+function addInstitution (req, res) {
   const institution = req.body.institution;
   req.checkBody("institution", "Please provide institution name").notEmpty().isAlpha();
   req.sanitizeBody("institution").trim();
@@ -86,7 +86,7 @@ const addInstitution = function (req, res) {
   });
 }
 
-const getInstitutions = function (req, res) {
+function getInstitutions (req, res) {
   Institution.find({}, function (err, institutions) {
     if (err) {
       console.log(err);
@@ -97,7 +97,7 @@ const getInstitutions = function (req, res) {
   })
 };
 
-const getEditInstitution = function (req, res) {
+function getEditInstitution (req, res) {
   const _id = req.params.id;
   Institution.findOne({ _id }, function (err, institution) {
     if (err) console.log(err);
@@ -107,7 +107,7 @@ const getEditInstitution = function (req, res) {
 }
 
 
-const editInstitution = function (req, res) {
+function editInstitution (req, res) {
   const _id = req.params.id;
   const institution = req.body.institution;
   req.checkBody("institution", "Please provide institution name").notEmpty().isAlpha();
@@ -134,7 +134,7 @@ const editInstitution = function (req, res) {
 }
 
 
-const deleteInstitution = function (req, res) {
+function deleteInstitution (req, res) {
   const _id = req.params.id;
   helpers.deleteFromDb(Institution, { _id }, function (err, removed) {
     if (err) {
@@ -150,7 +150,7 @@ const deleteInstitution = function (req, res) {
 
 // Pack Section
 
-const createPack = function (req, res) {
+function createPack (req, res) {
   let name = req.body.name;
   req.checkBody("name", "A question pack must have an alphanumeric name")
             .notEmpty().isAlpha();
@@ -176,7 +176,7 @@ const createPack = function (req, res) {
 }
 
 
-const getPack = function (req, res, next) {
+function getPack (req, res, next) {
   let name = req.params.name;
   Pack.findOne({ name }).populate('questions').exec(function (err, pack) {
     if (err) {
@@ -193,7 +193,7 @@ const getPack = function (req, res, next) {
 };
 
 
-const addQuestionToPack = function (req, res) {
+function addQuestionToPack (req, res) {
   let question = req.body.question;
   let optionA = req.body.optionA;
   let optionB = req.body.optionB;
@@ -276,7 +276,7 @@ const addQuestionToPack = function (req, res) {
 // }
 
 
-const getPackList = function (req, res) {
+function getPackList (req, res) {
   Pack.find({}, {"name": 1}, function (err, packs) {
     if (err) {
       console.log(err);
@@ -288,7 +288,7 @@ const getPackList = function (req, res) {
   })
 }
 
-const deletePack = function (req, res) {
+function deletePack (req, res) {
   const name = req.params.name;
   helpers.deleteFromDb(Pack, { name }, function (err, removed) {
     if (err) {
@@ -309,7 +309,7 @@ const deletePack = function (req, res) {
 
 
 // News Section
-const listNews = function (req, res) {
+function listNews (req, res) {
   NewsItem.find({}).sort({ _id: -1 }).exec(function (err, news) {
     if (err) {
       req.flash("failure", "Unable to fetch list items");
@@ -320,7 +320,7 @@ const listNews = function (req, res) {
   })
 };
 
-const addNews = function (req, res) {
+function addNews (req, res) {
   const title = req.body.title;
   const body = req.body.body;
 
@@ -342,7 +342,6 @@ const addNews = function (req, res) {
   let news = new NewsItem({ title, body });
   news.save(function(err, news) {
     if (err) {
-      console.log("UNABLE TO SAVE NEWS ITEM TO DB", err);
       req.flash("failure","Unable to save news item");
       res.redirect("/admin/news");
       return;
@@ -352,7 +351,7 @@ const addNews = function (req, res) {
   })
 }
 
-const deleteNews = function (req, res) {
+function deleteNews (req, res) {
   const newsId = req.params.id;
   NewsItem.findByIdAndRemove(newsId, function (err, done) {
     if (err){
@@ -365,7 +364,7 @@ const deleteNews = function (req, res) {
 }
 
 
-const getEditNews = function (req, res) {
+function getEditNews (req, res) {
   const _id = req.params.id;
   NewsItem.findOne({ _id }, function (err, newsItem) {
     if (err) {
@@ -376,11 +375,10 @@ const getEditNews = function (req, res) {
   });
 }
 
-const editNews = function (req, res, next) {
+function editNews (req, res, next) {
   const _id = req.params.id;
   let title = req.body.title;
   let body = req.body.body;
-  console.log(title, body);
 
   req.checkBody("title", "Title cannot be empty").notEmpty();
   req.sanitizeBody("title").trim();
@@ -390,7 +388,6 @@ const editNews = function (req, res, next) {
   req.sanitizeBody("body").escape();
 
   const errors = req.validationErrors();
-  console.log(errors);
   if (errors) {
     req.flash("error", errors[0].msg)
     res.redirect("/admin/news");
@@ -414,18 +411,16 @@ const editNews = function (req, res, next) {
 
 // Authentication token section
 
-const generateToken = (maxUse) => {
+function generateToken (maxUse, file, printToFile) {
   // 12 digit token numbers. 9e+11 possibilities
   const min = 100000000000;
   const max = 999999999999;
   const token =  Math.floor(Math.random() * (max -min) + min);
   return Token.count({ token }).then( count => {
     if ( count > 0 ) {
-      console.log("token Collision");
       generateToken(maxUse);
-    } else {
-      return Token.create({ token, maxUse });
     }
+    return Token.create({ token, maxUse });
   }).then(savedToken => {
     return generateSerial(savedToken._id)
   }).catch(err => {
@@ -434,7 +429,7 @@ const generateToken = (maxUse) => {
   })
 }
 
-const generateSerial = (tokenId) => {
+function generateSerial (tokenId, file) {
   // 16 digit serial numbers. 9e+15 possibilities
   const min = 1000000000000000;
   const max = 9999999999999999;
@@ -442,70 +437,93 @@ const generateSerial = (tokenId) => {
   // check for existence of serial without retrieving it
   return Token.count({ serial }).then( count => {
     if ( count > 0 ) {
-      console.log("oops! Serial Collision");
       generateSerial(maxUse);
-    } else {
-      return Token.findOneAndUpdate(
-        { _id: tokenId }, { $set: { serial } }
-      ).exec(
-        function (err, token) {
-          if (err) {
-            console.log(err.stack);
-            return;
-          }
-          return token;
-        }
-      )
     }
+    return Token.findOneAndUpdate(
+      { _id: tokenId }, { $set: { serial } }
+    ).exec(
+      function (err, token) {
+        if (err) {
+          console.log(err.stack);
+          return;
+        }
+        return token;
+      }
+    )
   })
 }
 
 
-const printTokens = function (total, bulk) {
-  if (!bulk) return;
-
-}
-
-const createToken = function (req, res) {
-  console.log("about to start generating token and serials");
-// fetch these values from req.bodies or paremeters
+function createToken (req, res) {
+  console.log(req.body);
   let count = 0
-  let total = 10;
-  let maxUse = 5;
-  let tokens = '';
-  var filename = Date.now().toString() + '.txt';
-  whilst(
+  let total = req.body.total;
+  let maxUse = req.body.maxUse;
+
+  async.whilst(
     () => total > 0,
-    (callback) => { // def callback
+    (callback) => {
       generateToken(maxUse).then(token => {
         total--;
         count++;
         callback(null, token);
       }).catch(err => callback(err));
     },
-    function callback (err, token) {
+    function callback (err) {
       if (err) throw err;
-      console.log("DONE :", count);
-      // Loop complete, issue callback or promise
+      if (count > 1) {
+        returnTokenBatch(res, count);
+        return;
+      } else{
+        // ONLY SINGLE TOKEN REQUEST FROM USER. Handle by Purchase
+      }
+      // console.log(token);
+      // req.flash("message", "Tokens created");
+      // res.redirect("/admin");
     }
   );
-  req.flash("success", "tokens created");
-  res.redirect("/admin");
 }
 
 
-const bulkCreateTokens = function (total, maxUse) {
-  var filename = Date.now().toString + '.txt';
-  const appendFile = require('fs.appendFile');
-  while (total > 0) {
-    let token = generateToken().toString() + '\n';
-    appendFile(filename, token, function (err) {
-      if (err) console.error(err);
-    });
-  }
+function returnTokenBatch(res, count) {
+  let filename = Date.now().toString() + '.txt';
+  let batch = Token.find({}, {token: 1, serial: 1, _id: 0})
+              .sort({_id: -1})
+              .limit(count)
+              .exec();
+  batch.then((tokens) => {
+    async.each(
+      tokens,
+      function (token, callback) {
+        let data = `token: ${token.token}, serial: ${token.serial}\n`;
+        appendFile(filename, data, "utf8", function (err) {
+          if (err) {
+            callback(err);
+          }
+          callback();
+        })
+      },
+      function (err) {
+        if (err) {
+          console.log(err);
+          res.end("An error occured");
+          return;
+        }
+        res.send(filename);
+        return;
+      }
+    )
+  })
 }
 
 
+function showToken(req, res) {
+  let filename = req.params.filename;
+  req.sanitizeParams("filename");
+  const path = require('path');
+  let options = { root: path.dirname(__dirname), }
+  res.sendFile(`./${filename}`, options);
+}
 
 module.exports = {
   getAdmin,
@@ -528,68 +546,5 @@ module.exports = {
   generateToken,
   generateSerial,
   createToken,
+  showToken,
 };
-
-
-
-
-// const generateToken = function (maxUse) {
-//   // 12 digit token numbers. 9e+11 possibilities
-//   const min = 100000000000;
-//   const max = 999999999999;
-//   const token =  Math.floor(Math.random() * (max -min) + min);
-//   // ensure token doesn't exit exist in db before saving
-//   Token.count({ token }, function (err, count) {
-//     if (count > 0) {
-//       generateToken() ;
-//     } else {
-//       let newToken = new Token({ token, maxUse });
-//       newToken.save(function (err, savedToken) {
-//         if (err) {
-//           console.log(err);
-//           return;
-//         } else {
-//           generateSerial(savedToken._id);
-//           console.log("saved token is =>", savedToken.token);
-//           return savedToken.token;
-//         }
-//       })
-//     }
-//   })
-// }
-
-
-
-// const generateSerial = function (tokenId) {
-//   // 16 digit serial numbers. 9e+15 possibilities
-//   const min = 1000000000000000;
-//   const max = 9999999999999999;
-//   let serial =  Math.floor(Math.random() * (max - min) + min);
-//   // check for existence of serial without retrieving it
-//   Serial.count({ serial }, function (err, count) {
-//     if (count > 0) {
-//       generateSerial(tokenId);
-//     } else {
-//       let newSerial = new Serial({ serial });
-//       newSerial.token = tokenId;
-//       newSerial.save(function (err, savedSerial) {
-//         if (err) {
-//           console.log(err);
-//           return;
-//         }
-//         Token.findOneAndUpdate(
-//           { _id: tokenId },
-//           { serial: savedSerial._id },
-//           function (err, token) {
-//             if (err) {
-//               console.error(err);
-//               return;
-//             }
-//           }
-//         )
-//       })
-//     }
-//   })
-// }
-//
-//

@@ -3,35 +3,9 @@ $(document).ready(function () {
 
   $("select").material_select();
 
-  $(".delete-link").on("click", function (e) {
-    $target = $(e.target);
-    const id = $target.attr("data-id");
-    const itemType = $target.attr("data-type");
-    deleteItem(id, itemType);
-  });
-
   countDown();
 });
 
-
-function deleteItem (id, itemType) {
-  if (confirm(
-      "Are you sure you want to delete this " + itemType +
-      " from list of " + itemType + "s?")
-      ) {
-      $.ajax({
-        type: "DELETE",
-        url: `/admin/${itemType}/${id.toString()}`,
-        success: function (response) {
-          alert(response);
-          location.reload();
-        },
-        error: function (err) {
-          alert(`An error occured. Unable to delete ${itemType}`);
-        }
-      })
-    }
-}
 
 function countDown() {
   if (document.getElementById('timer')) {
@@ -42,7 +16,9 @@ function countDown() {
       var minutes = parseInt(timeArray[0], 10);
       var seconds = parseInt(timeArray[1], 10);
       seconds -= 1;
-      if (minutes < 0) return clearInterval(interval);
+      if (minutes < 0) {
+        return clearInterval(interval);
+      }
       if (minutes < 10 && minutes.length != 2) minutes = '0' + minutes;
       if (seconds < 0 && minutes != 0) {
           minutes -= 1;
@@ -65,5 +41,5 @@ function countDown() {
 }
 
 function submitQuiz () {
-  $(".quizForm").submit()
+  $(".quizForm").submit();
 }

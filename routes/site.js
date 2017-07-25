@@ -43,4 +43,6 @@ router.get('/quiz-auth', siteController.getQuizAuth);
 router.post('/quiz-auth', siteController.handleQuizAuth);
 
 
+router.post('/dashboard', siteController.tokenRegistration);
+
 module.exports = router;

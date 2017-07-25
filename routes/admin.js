@@ -24,8 +24,8 @@ router.get('/institution/:id/edit', admin.getEditInstitution);
 router.post('/institution/:id/edit', admin.editInstitution);
 router.delete('/institution/:id', admin.deleteInstitution);
 
-// router.get('/token', admin.showToken);
-router.get('/token', admin.createToken);
+router.get('/token/:filename', admin.showToken);
+router.post('/token', admin.createToken);
 
 
 

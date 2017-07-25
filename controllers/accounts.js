@@ -16,7 +16,9 @@ const Serial = require('../models/serial');
 
 
 const getLogin = function (req, res, next) {
-  res.render('login');
+  // res.render('login');
+  req.flash("message", "Login to proceed")
+  res.redirect('/')
 }
 
 const handleLogin = function (req, res, next) {
@@ -25,9 +27,10 @@ const handleLogin = function (req, res, next) {
   res.redirect(redirectTo);
 }
 
-const logout = function (req, res, next) {
-  req.logout();
+const logout = function (req, res) {
+  delete req.session.redirectTo;
   req.flash('success', "You are logged out");
+  req.logout();
   res.redirect('/');
 }
 
@@ -60,16 +63,44 @@ const handleSignUp = function (req, res, next) {
   req.checkBody('matriculationNumber', `Enter your Matriculation/Registration
                 number`).notEmpty();
   req.checkBody('telephone', 'Please provide a phone number starting with 234')
-               .matches(/234(\d){10}/);
+               .matches(/^234(\d){10}$/);
   req.checkBody('password', 'Password cannot be empty').notEmpty();
   req.checkBody('password2', 'Passwords do not match').equals(req.body.password);
+
+  req.sanitizeBody('email').trim();
+  req.sanitizeBody('email').escape();
+  req.sanitizeBody('surName').trim();
+  req.sanitizeBody('surName').escape();
+  req.sanitizeBody('firstName').trim();
+  req.sanitizeBody('firstName').escape();
+  req.sanitizeBody('sex').trim();
+  req.sanitizeBody('sex').escape();
+  req.sanitizeBody('username').trim();
+  req.sanitizeBody('username').escape();
+  req.sanitizeBody('institution').trim();
+  req.sanitizeBody('institution').escape();
+  req.sanitizeBody('matriculationNumber').trim();
+  req.sanitizeBody('matriculationNumber').escape();
+  req.sanitizeBody('telephone').trim();
+  req.sanitizeBody('telephone').escape();
+  req.sanitizeBody('password').escape();
 
   let errors = req.validationErrors();
 
   if (errors) {
+    let details = {
+      email,
+      surName,
+      firstName,
+      sex,
+      username,
+      institution,
+      matriculationNumber,
+      telephone,
+    }
     Institiution.find({}, function (err, institutions) {
       if (err) console.error(err);
-      res.render('signupForm', { institutions, errors });
+      res.render('signupForm', { institutions, errors, details });
     })
   } else {
     Institiution.findOne({'institution': institution},
@@ -90,7 +121,9 @@ const handleSignUp = function (req, res, next) {
                               });
         bcrypt.genSalt(10, function (err, salt) {
           bcrypt.hash(newUser.password, salt, function (err, hash) {
-            if (err) console.log(err);
+            if (err) {
+              throw err;
+            }
             newUser.password = hash;
             newUser.save(function (err) {
               if (err) {
@@ -110,46 +143,10 @@ const handleSignUp = function (req, res, next) {
 }
 
 
-const tokenRegistration = function (req, res) {
-  let token = req.body.token;
-  req.checkBody('token', 'Please enter a valid 12 digit PIN')
-               .matches(/(\d){10}/);
-  req.sanitizeBody("token").trim();
-  req.sanitizeBody("token").escape();
-  const errors = req.validationErrors();
-  console.log(errors);
-  if (errors) {
-    req.flash("error", errors[0].msg)
-    res.redirect("/dashboard");
-    return;
-  }
-  Token.findOne({ token }, function (err, token){
-    if (err) {
-      console.log(err);
-      return
-    } else {
-      console.log("token found");
-      User.findByIdAndUpdate(
-        { _id: req.user._id },
-        { token : token._id },
-        function ( err, user) {
-          if (err) {
-            console.log(err);
-          } else {
-            console.log(user.token);
-            res.end('done');
-          }
-        }
-      )
-    }
-  })
-}
-
 module.exports = {
                   getLogin,
                   handleLogin,
                   logout,
                   getSignUp,
                   handleSignUp,
-                  tokenRegistration,
                 }

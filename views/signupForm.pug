@@ -1,6 +1,14 @@
 extends base.pug
 block content
     .container
+        if details
+            -var email = details.email || ''
+            -var surName = details.surName || ''
+            -var firstName = details.firstName || ''
+            -var username = details.username || ''
+            -var institution = details.institution || ''
+            -var matriculationNumber = details.matriculationNumber || ''
+            -var telephone = details.telephone || ''
         .row
             form.col.s12(action='/accounts/sign-up', method='POST')
                 .row
@@ -13,49 +21,49 @@ block content
                                     p !{err.msg}
                     .input-field.col.s12.l6
                         i.material-icons.prefix email
-                        input#email.validate(type='email', name='email')
+                        input#email.validate(type='email', name='email', value=email, required, maxlength="100")
                         label(for='email') Email
                     .input-field.col.s12.l6
                         i.material-icons.prefix account_circle
-                        input#surname.validate(type='text', name='surName')
+                        input#surname.validate(type='text', name='surName', value=surName, required, minlength="1", maxlength="100")
                         label(for='surname') Surname
                     .input-field.col.s12.l6
                         i.material-icons.prefix account_circle
-                        input#firstName.validate(type='text', name='firstName')
+                        input#firstName.validate(type='text', name='firstName', value=firstName, required, minlength="1", maxlength="100")
                         label(for='firstName') First name
                     .input-field.col.s12.l6
                         i.material-icons.prefix account_circle
-                        input#username.validate(type='text', name='username')
+                        input#username.validate(type='text', name='username', value=username, required, minlength="8", maxlength="60")
                         label(for='username') Username
                     .input-field.col.s12.l6
                         i.material-icons.prefix account_circle
-                        input#male.validate(type='radio', name='sex' value='male')
+                        input#male.validate(type='radio', name='sex' value='male', required)
                         label(for='male') male
-                        input#female.validate(type='radio', name='sex' value='female')
+                        input#female.validate(type='radio', name='sex' value='female', required)
                         label(for='female') female
                     .input-field.col.s12.l6
                         i.material-icons.prefix vpn_key
-                        input#password.validate(type='password', name='password')
+                        input#password.validate(type='password', name='password', required, minlength="8", maxlength="60", title="must be at leat 8 characters long")
                         label(for='password') Password
                     .input-field.col.s12.l6
                         i.material-icons.prefix vpn_key
-                        input#password2.validate(type='password', name='password2')
+                        input#password2.validate(type='password', name='password2', required)
                         label(for='password2') Confirm Password
                     .input-field.col.s12.l6
                         i.material-icons.prefix school
-                        select#institution(name='institution')
+                        select#institution(name='institution', required)
                             option(value='', disabled='', selected='') Choose your institution
                             each institution in institutions
                                 option(value=institution.institution) #{institution.institution}
                         label(for='institution') Institution
                     .input-field.col.s12.l6
                         i.material-icons.prefix account_box
-                        input#matriculationNumber(type='text', name='matriculationNumber')
+                        input#matriculationNumber(type='text', name='matriculationNumber', value=matriculationNumber, required)
                         label(for='matriculationNumber') Matriculation/Registration Number
                     .input-field.col.s12.l6
                         i.material-icons.prefix phone
-                        input#icon_telephone.validate(type='tel', name='telephone')
-                        label(for='icon_telephone') Telephone
+                        input#icon_telephone.validate(type='tel', name='telephone', value=telephone, required,  pattern="(\d){10}")
+                        label(for='icon_telephone') Telephone e.g 2348012345678
                     button.waves-effect.waves-light.btn.col.s6.offset-s3
                         i.material-icons.right send
                         | SIGN UP

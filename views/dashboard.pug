@@ -1,11 +1,27 @@
 extends base.pug
-
 block content
     .center.white.teal-text.darken-4.dash
         h4
             strong Dashboard
     .row
         .container
+            .col.s12.m5
+                .container.center
+                    .input-field.col.s12
+                        p You can use the button below to get a PIN, if you don't have one
+                        btn.waves-effect.waves-light.btn(href='/get-token') GET PIN
+            .col.s12.m5.push-m2
+                .container.center
+                    form(action='/verify-token', method='POST')
+                        .input-field.col.s12.teal-text
+                            input#serial.validate(type='text', name='token', 
+                            placeholder='enter serial number', required, 
+                            pattern='^(\d){12}' title='input a 16 digit serial number')
+                            button.waves-effect.waves-light.btn
+                                | Verify token
+
+    .row
+        .container(style='margin-top: 50px')
             if user && !user.isRegistered
                 .center
                     h6.red-text
@@ -19,31 +35,31 @@ block content
                 .div
                     h6 Institution: 
                         strong !{institution.institution}
-                .center
+                .center(style='margin-top: 30px')
                     h5
                         strong.teal-text.darken-4 Competitions
-                    .dashboard.col.s12.m5
+                    .dashboard.col.s12.m5.push-m1
                         h6.teal-text.darken-4
                             strong
                                 a(href='/virtual-quiz') Virtual Quiz
                         hr
                         h6 Best Score: 
                             strong.teal-text.darken-4 !{user.virtualQuiz.score || 0}
-                    .dashboard.col.s12.m5
+                    .dashboard.col.s12.m5.push-m1
                         h6.teal-text.darken-4
                             strong
                                 a(href='/scholars-cup') Scholars Cup
                         hr
                         h6 Best Score: 
                             strong.teal-text.darken-4 !{user.scholarsCup.score || 0}
-                    .dashboard.col.s12.m5
+                    .dashboard.col.s12.m5.push-m1
                         h6.teal-text.darken-4
                             strong
                                 a(href='/scholars-bowl') Scholars Bowl
                         hr
                         h6 Best Score: 
                             strong.teal-text.darken-4 !{user.scholarsBowl.score || 0}
-                    .dashboard.col.s12.m5
+                    .dashboard.col.s12.m5.push-m1
                         h6.teal-text.darken-4
                             strong
                                 a(href='/grants') Education Grant

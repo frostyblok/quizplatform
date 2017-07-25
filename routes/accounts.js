@@ -10,7 +10,7 @@ router.post('/login',
             passport.authenticate(
               'local',
               {
-                failureRedirect: '/accounts/login',
+                failureRedirect: '/',
                 failureFlash: true,
                 successFlash: true,
               }
@@ -24,6 +24,6 @@ router.get('/sign-up', accounts.getSignUp);
 
 router.post('/sign-up', accounts.handleSignUp);
 
-router.post('/token-auth', accounts.tokenRegistration);
+// router.post('/token-auth', accounts.tokenRegistration);
 
 module.exports = router;

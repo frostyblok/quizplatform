@@ -20,7 +20,12 @@ const tokenSchema = mongoose.Schema({
   serial: {
     type: Number,
     index: true,
-  }
+  },
+  spent: {
+    type: Boolean,
+    required: true,
+    default: false,
+  },
 });
 
 
