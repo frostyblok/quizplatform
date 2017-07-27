@@ -62,7 +62,7 @@ block content
                         label(for='matriculationNumber') Matriculation/Registration Number
                     .input-field.col.s12.l6
                         i.material-icons.prefix phone
-                        input#icon_telephone.validate(type='tel', name='telephone', value=telephone, required,  pattern="(\d){10}")
+                        input#icon_telephone.validate(type='tel', name='telephone', value=telephone, required,  pattern="^234[0-9]{10}$")
                         label(for='icon_telephone') Telephone e.g 2348012345678
                     button.waves-effect.waves-light.btn.col.s6.offset-s3
                         i.material-icons.right send

@@ -7,7 +7,6 @@ block content
                     span#timer.right 06:30
         .container
             .col.s12
-                //- h4 Pack name: #{pack.name}
                 if pack.questions.length
                     form.quizForm(action="/virtual-quiz" method="POST")
                         include questionTemplate

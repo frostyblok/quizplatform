@@ -53,19 +53,21 @@ function bulkCreateTokens (e) {
       url: "/admin/token",
       data: { total, maxUse },
       success: function (response) {
+        createTokenBtn.attr("disabled", "false");
         $('#token-nofication').html(`
           <strong>
-          <a style='color: red' href='/admin/token/${response}'>
+          <a style='color: red' href='/admin/token/${response}'
+            target="_blank" rel="noopener noreferrer">
             Click here to see Token batch
           </a>
           </strong>
-          `)
-
+        `)
       },
       error: function (err) {
-        createTokenBtn.attr("disabled", "false");
         alert(`An error occured while getting tokens. Try again later`);
+        createTokenBtn.attr("disabled", "false");
       }
     })
+    createTokenBtn.attr("disabled", "false");
   }
 }

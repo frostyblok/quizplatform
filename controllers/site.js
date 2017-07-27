@@ -150,6 +150,28 @@ const tokenRegistration = function (req, res, next) {
 
 
 
+function verifyToken (req, res) {
+  let serial = req.body.serial;
+  Token.findOne({serial}).exec().then((token) => {
+    if(!token || token.currentUse >= token.maxUse ||  token.spent) {
+      req.flash("error", "Invalid PIN.");
+      res.redirect("/dashboard");
+      return;
+    } else if(token.user && token.user.toString() !== req.user._id.toString()) {
+      req.flash("error", "PIN has been used by another user");
+      console.log(token.user.toString());
+      console.log(req.user.toString());
+      res.redirect("/dashboard");
+      return;
+    } else {
+      req.flash("message", "PIN is valid.");
+      res.redirect("/dashboard");
+    }
+  }).catch((err)=> {
+    req.flash("error", "An error occured");
+    res.redirect("/dashboard")
+  })
+}
 
 
 const getQuiz = function (req, res) {
@@ -176,7 +198,6 @@ const getQuiz = function (req, res) {
 const evaluateQuiz = function (req, res) {
   // if user token count >= maxTokenUse take care of things
   // time allowed is 6.5mins + 10secs extra for latency.
-  console.log("EVALUATING QUIZ \n", req.user);
   const TIME_ALLOWED = 6.5 * 60 * 1000 + 10 * 1000;
   const finishTime = Date.now();
   const startTime = req.session.startTime;
@@ -212,7 +233,8 @@ const evaluateQuiz = function (req, res) {
           }
           let unAnswered = questions.length - (correct + wrong);
           score = score.toFixed(1);
-          saveScore(req.user, score, timeTaken);
+          const competition = getCompetitionName(req);
+          saveScore(req.user._id, score, timeTaken, competition);
           res.render("result", { score, correct, wrong, unAnswered })
         }
       }
@@ -220,21 +242,46 @@ const evaluateQuiz = function (req, res) {
   }
 }
 
-
-const saveScore = (user, score, time) => {
-  if (user.score && user.score > score)
-    return;
-  if (user.score && user.score < score) {
-    user.score = score;
-  }
-  if (user.score && user.score === score) {
-    if (time < user.time){
-      user.time = time;
-      user.score = score;
+function getCompetitionName(req) {
+  let redirectTo = req.session.redirectTo.slice(1);
+  let competition;
+  switch (redirectTo) {
+    case "virtual-quiz":
+      competition = "virtualQuiz";
+      break;
+    case "scholars-cup":
+      competition = "scholarsCup";
+      break;
+    case "grants":
+      competition = "educationGrant";
+      break;
+    case "scholars-bowl":
+      competition = "scholarsBowl";
+      break;
     }
-  }
-  user.save();
-  return;
+    return competition;
+}
+
+const saveScore = (userId, score, time, competition) => {
+  User.findById({_id: userId}).exec().then((user)=> {
+    if (user[competition].score < score) {
+      user[competition].score = score;
+      if (user[competition].time === 0 || user[competition].time > time) {
+        user[competition].time = time;
+      }
+    } else if (user[competition].score === score) {
+      if (user[competition].time === 0 || user[competition].time > time) {
+        user[competition].time = time;
+      }
+    }
+    user[competition].attempts++;
+    return user;
+  }).then((user) => {
+    user.save();
+  }).catch((err)=> {
+    console.log(err);
+    return;
+  })
 }
 
 
@@ -252,6 +299,53 @@ const getRanking = function (req, res) {
 }
 
 
+function ranking (req, res) {
+  let url = req.url;
+  Institution.find({}).exec().then((institutions) => {
+    res.render("ranking", { institutions, url })
+  })
+}
+
+function institutionRanking (req, res) {
+  let institutionId = req.user.institution;
+  let competition = req.body.competition;
+  req.sanitizeBody("competition").trim();
+  req.sanitizeBody("competition").escape();
+  let selectQuery = {  firstName: 1, surName: 1, username: 1 };
+  selectQuery[competition] = 1;
+  let sortQuery = {};
+  sortQuery[competition + '.score'] = 1;
+  sortQuery[competition + '.time'] = -1;
+
+  User.find({ institution: institutionId })
+      .select(selectQuery)
+      .sort(sortQuery)
+      .limit(50)
+      .exec().then((users) => {
+        res.render("ranking", {users, competition})
+      })
+}
+
+
+function topApplicants (req, res) {
+  let url = req.url;
+  let institutionId = req.user.institution;
+  let competition = req.body.competition;
+  req.sanitizeBody("competition").trim();
+  req.sanitizeBody("competition").escape();
+  let selectQuery = {  firstName: 1, surName: 1, username: 1 };
+  selectQuery[competition + '.attempts'] = 1;
+  let sortQuery = { attempts: -1 };
+
+  User.find({ institution: institutionId })
+      .select(selectQuery)
+      .sort(sortQuery)
+      .limit(50)
+      .exec().then((users) => {
+        res.render("ranking", {users, competition})
+      })
+}
+
 module.exports = {
   getDashBoard,
   newsList,
@@ -261,4 +355,8 @@ module.exports = {
   tokenRegistration,
   getQuiz,
   evaluateQuiz,
+  verifyToken,
+  ranking,
+  institutionRanking,
+  topApplicants,
 };

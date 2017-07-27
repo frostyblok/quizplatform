@@ -16,13 +16,12 @@ const Serial = require('../models/serial');
 
 
 const getLogin = function (req, res, next) {
-  // res.render('login');
   req.flash("message", "Login to proceed")
   res.redirect('/')
 }
 
 const handleLogin = function (req, res, next) {
-  var redirectTo = req.session.redirectTo || '/dashboard';
+  const redirectTo = req.session.redirectTo || '/dashboard';
   delete req.session.redirectTo;
   res.redirect(redirectTo);
 }
@@ -63,7 +62,7 @@ const handleSignUp = function (req, res, next) {
   req.checkBody('matriculationNumber', `Enter your Matriculation/Registration
                 number`).notEmpty();
   req.checkBody('telephone', 'Please provide a phone number starting with 234')
-               .matches(/^234(\d){10}$/);
+               .matches(/^234[0-9]{10}$/);
   req.checkBody('password', 'Password cannot be empty').notEmpty();
   req.checkBody('password2', 'Passwords do not match').equals(req.body.password);
 

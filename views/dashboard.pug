@@ -4,21 +4,28 @@ block content
         h4
             strong Dashboard
     .row
+        .container(style='margin-top: 50px')
+            if user && !user.isRegistered
+                .center
+                    h6.red-text
+                        i.material-icons.prefix error
+                        strong Please complete your registration by providing PIN
+                    include includes/tokenAuthenticationForm
         .container
             .col.s12.m5
                 .container.center
-                    .input-field.col.s12
+                    .input-field
                         p You can use the button below to get a PIN, if you don't have one
                         btn.waves-effect.waves-light.btn(href='/get-token') GET PIN
             .col.s12.m5.push-m2
                 .container.center
                     form(action='/verify-token', method='POST')
                         .input-field.col.s12.teal-text
-                            input#serial.validate(type='text', name='token', 
-                            placeholder='enter serial number', required, 
-                            pattern='^(\d){12}' title='input a 16 digit serial number')
+                            input#serial.validate(type='text', name='serial', 
+                            placeholder='enter 16 digit serial number', required, 
+                            pattern='^[0-9]{16}$' title='input a 16 digit serial number')
                             button.waves-effect.waves-light.btn
-                                | Verify token
+                                | Verify PIN
 
     .row
         .container(style='margin-top: 50px')

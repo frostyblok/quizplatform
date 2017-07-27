@@ -45,4 +45,12 @@ router.post('/quiz-auth', siteController.handleQuizAuth);
 
 router.post('/dashboard', siteController.tokenRegistration);
 
+router.post('/verify-token', siteController.verifyToken);
+
+router.post('/ranking', ensureLogin, siteController.institutionRanking);
+router.get('/ranking', ensureLogin, siteController.ranking);
+
+router.get('/top-applicants', ensureLogin, siteController.ranking);
+router.post('/top-applicants', ensureLogin, siteController.topApplicants);
+
 module.exports = router;

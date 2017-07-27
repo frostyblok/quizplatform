@@ -8,7 +8,16 @@ block content
                         h5 Users
                         p Total Number of Sign Ups: 
                             strong.red-text !{userCount}
-                        a.waves-effect.waves-light(href='') Not ready
+                    if user && user.isSuperUser
+                        form(action='/admin/make-staff', method='POST')
+                            .row
+                                .col.s12
+                                    p Grant Admin Priviledges
+                                    .input-field
+                                        input#pack-name.col.s8.validate(type='text',
+                                        name='username', placeholder='type a username to grant afmin access')
+                                            //- label(for='pack-name') Name
+                                        button.col.s4.btn.waves-effect.waves-light.teal Submit
             .admin-section
                 .container
                     header
@@ -58,3 +67,19 @@ block content
                                     .input-field
                                         button#create-token-btn.btn.waves-effect.waves-light.teal
                                             | Create Tokens
+            if user && user.isSuperUser
+            .admin-section
+                .container
+                    header
+                        h5 Reset Season
+                    form(action='/admin/season-reset', method='POST')
+                        .row
+                            .col.s12
+                                p Reset Season By Institution
+                                .input-field.col.s12.l6
+                                    i.material-icons.prefix school
+                                    select#institution(name='institution', required)
+                                        option(value='', disabled='', selected='false') Select Institution
+                                        each institution in institutions
+                                            option(value=institution.institution) #{institution.institution}
+                                button.btn.waves-effect.waves-light.teal RESET

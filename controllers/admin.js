@@ -53,10 +53,32 @@ function getUserCount (req, res) {
 
 
 function getAdmin (req, res, next) {
-  let users = User.count({}).exec();
-  users.then((userCount) => {
-    res.render("admin/admin", { userCount });
+  User.count({}).exec().then((userCount) => {
+    Institution.find({}).then((institutions) => {
+      res.render("admin/admin", { userCount, institutions });
+    })
   }).catch((err)=> next(err));
+}
+
+
+function makeStaff (req, res) {
+  let username = req.body.username;
+  req.checkBody("username", "cannot create staff without username").notEmpty();
+  req.sanitizeBody("username").trim();
+  req.sanitizeBody("username").escape();
+  const errors = req.validationErrors();
+  if (errors) {
+    req.flash("error", errors[0].msg);
+    res.redirect("/admin");
+    return;
+  }
+  User.findOneAndUpdate({username}, {isStaff: true}).then((user) => {
+    req.flash("message", "Staff user created");
+    res.redirect("/admin");
+  }).catch((err) => {
+    req.flash("error", "Unable to create staff user");
+    res.redirect("/admin");
+  })
 }
 
 
@@ -85,6 +107,7 @@ function addInstitution (req, res) {
     res.redirect("/admin/institution");
   });
 }
+
 
 function getInstitutions (req, res) {
   Institution.find({}, function (err, institutions) {
@@ -505,7 +528,6 @@ function returnTokenBatch(res, count) {
       },
       function (err) {
         if (err) {
-          console.log(err);
           res.end("An error occured");
           return;
         }
@@ -525,9 +547,51 @@ function showToken(req, res) {
   res.sendFile(`./${filename}`, options);
 }
 
+
+function resetSeason(req, res) {
+  let institution = req.body.institution;
+  req.checkBody("institution", "select an institution to reset season").notEmpty();
+  req.sanitizeBody("institution").trim();
+  req.sanitizeBody("institution").escape();
+  const errors = req.validationErrors();
+  if (errors) {
+    req.flash("error", errors[0].msg);
+    res.redirect("/admin");
+    return;
+  }
+  Institution.findOne({institution}).exec().then((institution) => {
+    User.find({institution: institution._id}).exec().then((users) => {
+      async.each(
+        users,
+        function (user, callback) {
+          user.virtualQuiz = { score: 0, time: 0, attempts: 0 };
+          user.scholarsCup = { score: 0, time: 0, attempts: 0 };
+          user.scholarsBowl = { score: 0, time: 0, attempts: 0 };
+          user.educationGrant = { score: 0, time: 0, attempts: 0 };
+          user.save()
+          callback();
+        },
+        function (err) {
+          if (err) {
+            req.flash("error", "An error occured while resetting season");
+            return;
+          }
+          req.flash("message", `Season successfully reset for ${institution.institution}`);
+          res.redirect("/admin");
+          return;
+        }
+      )
+    })
+
+  })
+}
+
+
+
 module.exports = {
   getAdmin,
   getUsers,
+  makeStaff,
   addInstitution,
   getEditInstitution,
   editInstitution,
@@ -547,4 +611,5 @@ module.exports = {
   generateSerial,
   createToken,
   showToken,
+  resetSeason,
 };

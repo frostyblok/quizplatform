@@ -28,6 +28,9 @@ router.get('/token/:filename', admin.showToken);
 router.post('/token', admin.createToken);
 
 
+router.post('/make-staff', admin.makeStaff);
+router.post('/season-reset', admin.resetSeason);
+
 
 // root admin route
 router.get('/', admin.getAdmin);

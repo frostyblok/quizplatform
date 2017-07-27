@@ -61,20 +61,60 @@ const userSchema =  mongoose.Schema ({
     default: false,
   },
   virtualQuiz: {
-    score: Number,
-    time: Number,
+    score: {
+      type: Number,
+      default: 0
+    },
+    time: {
+      type: Number,
+      default: 0
+    },
+    attempts: {
+      type: Number,
+      default: 0,
+    },
   },
   scholarsCup: {
-    score: Number,
-    time: Number,
+    score: {
+      type: Number,
+      default: 0
+    },
+    time: {
+      type: Number,
+      default: 0
+    },
+    attempts: {
+      type: Number,
+      default: 0,
+    },
   },
   scholarsBowl: {
-    score: Number,
-    time: Number,
+    score: {
+      type: Number,
+      default: 0
+    },
+    time: {
+      type: Number,
+      default: 0
+    },
+    attempts: {
+      type: Number,
+      default: 0,
+    },
   },
   educationGrant: {
-    score: Number,
-    time: Number,
+    score: {
+      type: Number,
+      default: 0
+    },
+    time: {
+      type: Number,
+      default: 0
+    },
+    attempts: {
+      type: Number,
+      default: 0,
+    },
   },
 });
 

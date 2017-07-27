@@ -4,7 +4,7 @@ form.col.s12(action=url, method='POST')
         .container.center
             .input-field.col.s12.teal-text
                 i.material-icons.prefix vpn_key
-                input#icon_prefix.validate(type='text', name='token', placeholder='PIN', required, pattern='^(\d){12}' title='input a 12 digit PIN')
+                input#icon_prefix.validate(type='text', name='token', placeholder='PIN', required, pattern='^[0-9]{12}$' title='input a 12 digit PIN')
                 button.waves-effect.waves-light.btn.col.s6.offset-s3
                     | SUBMIT
                     i.material-icons.right send
