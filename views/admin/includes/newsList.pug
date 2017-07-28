@@ -8,9 +8,11 @@
                     h5 #{item.title}
                 if user && user.isStaff
                     .col.s4
-                        a.control.edit-link.btn.waves-effect.waves-light.teal.darken-4(href=`/admin/news/${item._id}/edit` data-id=item._id data-type='news')
+                        a.control.edit-link.btn.waves-effect.waves-light.teal.darken-4(
+                        href=`/admin/news/${item._id}/edit` data-id=item._id data-type='news')
                             i.material-icons(data-id=item._id data-type='news') edit
-                        a.control.delete-link.btn.waves-effect.waves-light.red.darken-4(href='#' data-id=item._id data-type='news')
+                        a.control.delete-link.btn.waves-effect.waves-light.red.darken-4(
+                        href='#' data-id=item._id data-type='news')
                             i.material-icons(data-id=item._id data-type='news') delete
             .col.s12
                 p !{item.body}

@@ -1,4 +1,14 @@
 each question, index in pack.questions
+    if user && user.isStaff
+        .col.s12
+            .col.s4.right
+                a.control.edit-link.btn.waves-effect.waves-light.teal.darken-4(
+                href=`/admin/question/${question._id}/edit`
+                data-id=question._id data-type='question')
+                    i.material-icons(data-id=question._id data-type='question') edit
+                a.control.delete-link.btn.waves-effect.waves-light.red.darken-4(
+                href='#' data-id=question._id data-type='question')
+                     i.material-icons(data-id=question._id data-type='question') delete
     .col.s12
         p #{index + 1}. #{question.question}
         .input-field.col.s12

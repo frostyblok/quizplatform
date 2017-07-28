@@ -206,9 +206,10 @@ function getPack (req, res, next) {
       req.flash("failure", "unable to fetch question pack");
       res.redirect("/admin");
     } else {
-      if (pack)
-        res.render("admin/pack", {pack});
-      else {
+      if (pack) {
+        let url =`/admin/pack/${pack.name}`
+        res.render("admin/pack", { pack, url });
+      } else {
         next()
       }
     }
@@ -294,9 +295,101 @@ function addQuestionToPack (req, res) {
 };
 
 // TODO:
-// const editQuestion = function (req, res) {
-//
-// }
+function getEditQuestion (req, res) {
+  let _id = req.params.id;
+  Question.findOne({_id}).exec().then((question) => {
+    let url =`/admin/question/${question._id}/edit`
+    res.render("admin/editQuestion", { question, url })
+  }).catch((err) => {
+    req.flash("error", "unable to get question details");
+    res.redirect("/admin/pack");
+  })
+}
+
+
+function editQuestion (req, res) {
+  let _id = req.params.id;
+  let question = req.body.question;
+  let optionA = req.body.optionA;
+  let optionB = req.body.optionB;
+  let optionC = req.body.optionC;
+  let optionD = req.body.optionD;
+  let correctAnswer = req.body.correctAnswer;
+
+  req.checkBody("question", "Question cannot be empty").notEmpty();
+  req.checkBody("optionA", "Please provide option A").notEmpty();
+  req.checkBody("optionB", "Please provide option B").notEmpty();
+  req.checkBody("optionC", "Please provide option C").notEmpty();
+  req.checkBody("optionD", "Please provide option D").notEmpty();
+  req.checkBody("correctAnswer", "Specify the correct Answer").notEmpty();
+
+  req.sanitizeBody("question").trim();
+  req.sanitizeBody("question").escape();
+  req.sanitizeBody("optionA").trim();
+  req.sanitizeBody("optionA").escape();
+  req.sanitizeBody("optionB").trim();
+  req.sanitizeBody("optionB").escape();
+  req.sanitizeBody("optionC").trim();
+  req.sanitizeBody("optionC").escape();
+  req.sanitizeBody("optionD").trim();
+  req.sanitizeBody("optionD").escape();
+  req.sanitizeBody("correctAnswer").trim();
+  req.sanitizeBody("correctAnswer").escape();
+
+  const errors = req.validationErrors();
+  if (errors) {
+    req.flash("failure", errors[0].msg)
+    res.redirect("/admin/pack");
+    return;
+  }
+
+  Question.findOneAndUpdate({ _id }, {
+    question,
+    optionA,
+    optionB,
+    optionC,
+    optionD,
+    correctAnswer,
+  }).exec().then((question) => {
+    req.flash("message", "Question successfully edited");
+    res.redirect("/admin/pack");
+  }).catch((err) => {
+    req.flash("error", "unable to edit question");
+    res.redirect("/admin/pack");
+  })
+}
+
+
+function deleteQuestion (req, res) {
+  const _id = req.params.id;
+  Question.find({ _id }).exec(function (err, question) {
+    if (err) {
+      req.flash("error", "An error occured");
+      res.redirect("/admin/pack");
+      return;
+    }
+    let name = question[0].pack;
+    Pack.update(
+      { name },
+      { $pull: { questions: _id } },
+      function (err, pack) {
+        if (err) {
+          req.flash("error", "An error occured");
+          res.redirect("/admin/pack");
+          return;
+        }
+        Question.remove({ _id }).exec(function (err) {
+          if (err) {
+            req.flash("error", "An error occured");
+            res.redirect("/admin/pack");
+            return;
+          }
+          res.send("Question successfully deleted");
+        })
+      }
+    )
+  })
+}
 
 
 function getPackList (req, res) {
@@ -602,6 +695,9 @@ module.exports = {
   deletePack,
   createPack,
   addQuestionToPack,
+  getEditQuestion,
+  editQuestion,
+  deleteQuestion,
   listNews,
   addNews,
   getEditNews,

@@ -159,8 +159,6 @@ function verifyToken (req, res) {
       return;
     } else if(token.user && token.user.toString() !== req.user._id.toString()) {
       req.flash("error", "PIN has been used by another user");
-      console.log(token.user.toString());
-      console.log(req.user.toString());
       res.redirect("/dashboard");
       return;
     } else {
@@ -174,6 +172,10 @@ function verifyToken (req, res) {
 }
 
 
+function getToken(req, res) {
+  res.render("tokenForm");
+}
+
 const getQuiz = function (req, res) {
   Pack.count().exec(function (err, count) {
     var random = Math.floor(Math.random() * count);
@@ -183,7 +185,6 @@ const getQuiz = function (req, res) {
           req.flash("failure", "Unable to fetch quiz");
           res.render("index");
         } else {
-          // increment User.token use count here and save
           req.session["quizReady"] = false;
           req.session["startTime"] = Date.now();
           req.session["pack"] = pack.name;
@@ -353,6 +354,7 @@ module.exports = {
   getQuizAuth,
   handleQuizAuth,
   tokenRegistration,
+  getToken,
   getQuiz,
   evaluateQuiz,
   verifyToken,

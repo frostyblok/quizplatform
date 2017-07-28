@@ -10,6 +10,10 @@ router.get('/pack/:name', admin.getPack);
 router.post('/pack/:name', admin.addQuestionToPack);
 router.delete('/pack/:name', admin.deletePack);
 router.get('/pack', admin.getPackList);
+router.get('/question/:id/edit', admin.getEditQuestion);
+router.post('/question/:id/edit', admin.editQuestion);
+router.delete('/question/:id', admin.deleteQuestion);
+
 
 // news routes
 router.get('/news', admin.listNews);

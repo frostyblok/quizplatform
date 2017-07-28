@@ -26,11 +26,11 @@ const questionSchema = mongoose.Schema({
     required: true,
   },
   pack: {
-    // type: mongoose.Schema.Types.ObjectId,
     type: String,
     ref: 'Pack',
   },
 });
+
 
 const Question = mongoose.model('Question', questionSchema);
 

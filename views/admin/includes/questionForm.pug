@@ -1,22 +1,31 @@
+if question
+    -var questionText = question.question || ''
+    -var optionA = question.optionA || ''
+    -var optionB = question.optionB || ''
+    -var optionC = question.optionC || ''
+    -var optionD = question.optionD || ''
+    -var correctAnswer = question.correctAnswer || ''
+
+
 .col.s12
-    form.col.s12(action=`/admin/pack/${pack.name}` method='POST')
+    form.col.s12(action=url method='POST')
         .input-field.col.s12
-            textarea#question.materialize-textarea.validate(type='text', name='question')
+            textarea#question.materialize-textarea.validate(type='text', name='question') !{questionText}
             label(for='question') Question
         .input-field.col.s12.l6
-            input#optionA.validate(type='text', name='optionA')
+            input#optionA.validate(type='text', name='optionA', value=optionA)
             label(for='optionA') option A
         .input-field.col.s12.l6
-            input#optionB.validate(type='text', name='optionB')
+            input#optionB.validate(type='text', name='optionB', value=optionB)
             label(for='optionB') option B
         .input-field.col.s12.l6
-            input#optionC.validate(type='text', name='optionC')
+            input#optionC.validate(type='text', name='optionC', value=optionC)
             label(for='optionC') option C
         .input-field.col.s12.l6
-            input#optionD.validate(type='text', name='optionD')
+            input#optionD.validate(type='text', name='optionD', value=optionD)
             label(for='optionD') option D
         .input-field.col.s12.l6
-            input#correctAnswer.validate(type='text', name='correctAnswer')
+            input#correctAnswer.validate(type='text', name='correctAnswer', value=correctAnswer)
             label(for='correctAnswer') correct Answer
         .col.s12
             button.btn.waves-effect.waves-light.teal
