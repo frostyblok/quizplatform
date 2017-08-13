@@ -1,0 +1,20 @@
+extends base.pug
+block content
+    .row
+        .container
+            .admin-section
+                .container
+                    header
+                        h5 Select PIN type.
+                        form(action='/get-token' method='POST')
+                            .row
+                                .col.s12
+                                    p PINs are categorized based on the number times a PIN can be used
+                                    .input-field.col.s12.l6
+                                        input(type='hidden', name='_csrf', value=csrf)
+                                    .input-field.col.s12.l6
+                                        select#token(name='token', required)
+                                            option(value='', disabled='true', selected='false') Select Category
+                                            option(value="2") 2 Uses
+                                            option(value="5") 5 Uses
+                                    button.btn.waves-effect.waves-light.teal SUBMIT

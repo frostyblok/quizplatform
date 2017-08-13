@@ -1,0 +1,44 @@
+extends base.pug
+block content
+    .row
+        .container
+            .admin-section
+                .container
+                    header
+                        h5 Select Competition
+                        form(action=url method='POST')
+                            .row
+                                .col.s12
+                                    .input-field.col.s12.l6
+                                        input(type='hidden', name='_csrf', value=csrf)
+                                    .input-field.col.s12.l6
+                                        select#competition(name='competition', required)
+                                            option(value='', disabled='', selected='false') Select Category
+                                            option(value="educationGrant") Education Grant
+                                            option(value="scholarsBowl") Scholars Bowl
+                                            option(value="scholarsCup") Scholars Cup
+                                        label(for='competition') Competition
+                                    button.btn.waves-effect.waves-light.teal SUBMIT
+            div.results
+                if users
+                    h5.center Top 50
+                    table.bordered.striped.centered
+                        thead
+                            tr
+                                th Position
+                                th username
+                                th Full Name
+                                if url == '/ranking'
+                                    th Score
+                                else
+                                    th Attempts
+                        tbody
+                            each user, index in users
+                                tr
+                                    td !{index + 1}
+                                    td !{user.username}
+                                    td !{user.fullName}
+                                    if url == '/ranking'
+                                        td !{user[competition].score}
+                                    else
+                                        td !{user[competition].attempts}

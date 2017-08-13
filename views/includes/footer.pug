@@ -1,7 +1,7 @@
-footer.center
+footer
     .row.teal.darken-4.white-text.margin-less
-        .container
-            .col.s12.m4.l4
+        .container.footer-container
+            .col.s12.m4.l4#footer-navigation
                 h5.teal-text Navigation
                 ul.bottom-nav
                     include nav-items.pug
@@ -12,7 +12,11 @@ footer.center
             .col.s12.m4.l4
                 h5.teal-text Contact
                 p Phone: 07069213833, 08185539466	
-                p E-mail: jvecsoultion@gmail.com
+                p E-mail: jvecsoultions@gmail.com
         .col.s12.black
-            p
-                small &copy jvec solutions 2016.
+            - var inception = 2017
+            - var year = new Date().getFullYear()
+            p.right &copy jvec solutions !{inception} 
+                if year > inception
+                    span - !{year}
+            

@@ -1,0 +1,14 @@
+extends adminBase.pug
+block content
+    .row
+        .container
+            .center
+                h4 Pack: !{pack.name}
+            //- if user && user.isStaff
+            include includes/questionForm.pug
+            hr
+            if pack.questions.length
+                include ../questionTemplate
+            else
+                .center
+                    h5 No questions here yet

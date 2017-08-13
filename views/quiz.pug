@@ -1,0 +1,23 @@
+extends base.pug
+block content
+    .row
+        .col.s12.timer-container
+            h5.teal
+                strong
+                    span#timer.right 06:30
+        .container
+            .col.s12
+                if pack.questions.length
+                    form.quizForm(action="/virtual-quiz" method="POST")
+                        .input-field.col.s12.l6
+                            input(type='hidden', name='_csrf', value=csrf)
+                        include questionTemplate
+                        .col.s12
+                            br
+                            br
+                            button.waves-effect.waves-light.btn.col.s6.offset-s3
+                                | SUBMIT
+                                i.material-icons.right send
+                else
+                    .center.s12
+                        h5 Nothing here.

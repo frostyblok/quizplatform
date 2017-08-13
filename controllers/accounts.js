@@ -7,22 +7,29 @@ const User = require('../models/user');
 // import Institiution model Object
 const Institiution = require('../models/institution');
 
+// import Token model Object
+const Token = require('../models/token');
+
+// import Serial model Object
+const Serial = require('../models/serial');
+
+
+
 const getLogin = function (req, res, next) {
-  res.render('login');
+  req.flash("message", "Login to proceed")
+  res.redirect('/')
 }
 
 const handleLogin = function (req, res, next) {
-  passport.authenticate('local', {
-    successRedirect: '/',
-    failureRedirect: '/accounts/login',
-    failureFlash: true,
-    successFlash: true
-  })(req, res, next);
+  const redirectTo = req.session.redirectTo || '/dashboard';
+  delete req.session.redirectTo;
+  res.redirect(redirectTo);
 }
 
-const logout = function (req, res, next) {
-  req.logout();
+const logout = function (req, res) {
+  delete req.session.redirectTo;
   req.flash('success', "You are logged out");
+  req.logout();
   res.redirect('/');
 }
 
@@ -36,7 +43,7 @@ const getSignUp = function (req, res, next) {
 
 const handleSignUp = function (req, res, next) {
   const email = req.body.email;
-  const surname = req.body.surname;
+  const surName = req.body.surName;
   const firstName = req.body.firstName;
   const username = req.body.username;
   const sex = req.body.sex;
@@ -47,7 +54,7 @@ const handleSignUp = function (req, res, next) {
   const password2 = req.body.password2;
 
   req.checkBody('email', 'A valid email is required').isEmail();
-  req.checkBody('surname', 'Please provide your surname').notEmpty();
+  req.checkBody('surName', 'Please provide your surname').notEmpty();
   req.checkBody('firstName', 'Please provide your first name').notEmpty();
   req.checkBody('sex', 'You have not selected your sex').notEmpty()
   req.checkBody('username', 'Username cannot be empty').notEmpty();
@@ -55,16 +62,44 @@ const handleSignUp = function (req, res, next) {
   req.checkBody('matriculationNumber', `Enter your Matriculation/Registration
                 number`).notEmpty();
   req.checkBody('telephone', 'Please provide a phone number starting with 234')
-               .matches(/234(\d){10}/);
+               .matches(/^234[0-9]{10}$/);
   req.checkBody('password', 'Password cannot be empty').notEmpty();
   req.checkBody('password2', 'Passwords do not match').equals(req.body.password);
+
+  req.sanitizeBody('email').trim();
+  req.sanitizeBody('email').escape();
+  req.sanitizeBody('surName').trim();
+  req.sanitizeBody('surName').escape();
+  req.sanitizeBody('firstName').trim();
+  req.sanitizeBody('firstName').escape();
+  req.sanitizeBody('sex').trim();
+  req.sanitizeBody('sex').escape();
+  req.sanitizeBody('username').trim();
+  req.sanitizeBody('username').escape();
+  req.sanitizeBody('institution').trim();
+  req.sanitizeBody('institution').escape();
+  req.sanitizeBody('matriculationNumber').trim();
+  req.sanitizeBody('matriculationNumber').escape();
+  req.sanitizeBody('telephone').trim();
+  req.sanitizeBody('telephone').escape();
+  req.sanitizeBody('password').escape();
 
   let errors = req.validationErrors();
 
   if (errors) {
+    let details = {
+      email,
+      surName,
+      firstName,
+      sex,
+      username,
+      institution,
+      matriculationNumber,
+      telephone,
+    }
     Institiution.find({}, function (err, institutions) {
       if (err) console.error(err);
-      res.render('signupForm', { institutions, errors });
+      res.render('signupForm', { institutions, errors, details });
     })
   } else {
     Institiution.findOne({'institution': institution},
@@ -74,7 +109,7 @@ const handleSignUp = function (req, res, next) {
           return;
         }
         let newUser = new User({email,
-                                surname,
+                                surName,
                                 firstName,
                                 username,
                                 sex,
@@ -85,7 +120,9 @@ const handleSignUp = function (req, res, next) {
                               });
         bcrypt.genSalt(10, function (err, salt) {
           bcrypt.hash(newUser.password, salt, function (err, hash) {
-            if (err) console.log(err);
+            if (err) {
+              throw err;
+            }
             newUser.password = hash;
             newUser.save(function (err) {
               if (err) {
@@ -93,7 +130,9 @@ const handleSignUp = function (req, res, next) {
                 return;
               } else {
                 req.flash('success', 'Registration was successful');
-                res.redirect('/accounts/login');
+                passport.authenticate('local')(req, res, function () {
+                  res.redirect('/dashboard');
+                })
               }
             })
           })
@@ -103,4 +142,10 @@ const handleSignUp = function (req, res, next) {
 }
 
 
-module.exports = { getLogin, handleLogin, logout, getSignUp, handleSignUp }
+module.exports = {
+                  getLogin,
+                  handleLogin,
+                  logout,
+                  getSignUp,
+                  handleSignUp,
+                }

@@ -1,0 +1,16 @@
+extends adminBase.pug
+block content
+    .row
+        .container
+            .center
+                h5 Pack List
+            if packs
+                each pack, index in packs
+                    .col.s8
+                        h5 !{index + 1}. 
+                            a(href=`/admin/pack/${pack.name}`) !{pack.name}
+                    .col.s4
+                        a.control.delete-link.btn.waves-effect.waves-light.red.darken-4(href='#' data-id=pack.name data-type='pack')
+                            i.material-icons(data-id=pack.name data-type='pack') delete
+            else
+                h6 Nothing here

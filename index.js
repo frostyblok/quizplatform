@@ -3,6 +3,7 @@ const path = require('path');
 
 const express = require('express');
 const mongoose = require('mongoose');
+mongoose.Promise = global.Promise;
 const bodyParser = require('body-parser');
 const expressValidator = require('express-validator');
 const flash = require('connect-flash');
@@ -12,9 +13,10 @@ const morgan = require('morgan');
 const session = require('express-session');
 const passport = require('passport');
 const uuid = require('uuid');
+const csrf = require('csurf');
 
 const dbConfig = require('./config/db');
-
+const { ensureAdmin } = require('./utils/middlewares');
 
 
 // database layer
@@ -22,7 +24,7 @@ mongoose.connect(dbConfig.database);
 const db = mongoose.connection;
 
 db.on('error', function (err) {
-  console.bind(err);
+  console.log(err);
 });
 
 db.once('open', function () {
@@ -35,7 +37,6 @@ const User = require('./models/user');
 
 // application layer
 const app = express();
-const router = express.Router();
 
 
 // Load view engine
@@ -59,15 +60,10 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // Express Session
 app.use(session({
-    secret: 'secret',
-    saveUninitialized: true,
-    resave: true,
+    secret: 'secret', // COrrect this
+    saveUninitialized: false,
+    resave: false,
 }));
-
-// Passport init
-require('./config/passport')(passport);
-app. use(passport.initialize());
-app.use(passport.session());
 
 
 // Express Validator
@@ -88,8 +84,18 @@ app.use(expressValidator({
   }
 }));
 
+
+
+
+// Passport init
+require('./config/passport')(passport);
+app. use(passport.initialize());
+app.use(passport.session());
+
 // Connect Flash
 app.use(flash());
+
+// const csrfProtection = csrf();
 
 // set some global variables
 app.use(function (req, res, next) {
@@ -98,19 +104,45 @@ app.use(function (req, res, next) {
   next();
 });
 
-// app.get('*', function (req, res, next) {
-//   next();
-// })
 
 app.get('/', function (req, res) {
-  res.render('index');
+  res.render("index");
 });
 
 const accountRouter = require('./routes/accounts');
 app.use('/accounts', accountRouter);
 
 const adminRouter = require('./routes/admin');
+
+// app.use('/admin', ensureAdmin, adminRouter);
 app.use('/admin', adminRouter);
+
+const siteRouter = require('./routes/site');
+app.use('/', siteRouter);
+
+
+// Handle csrf errors
+app.use(function (err, req, res, next) {
+  if (err.code !== 'EBADCSRFTOKEN') return next(err)
+  res.status(403)
+  res.send('form tampered with')
+})
+
+
+app.use(function (err, req, res, next) {
+  console.error(err.stack);
+  let status = 500;
+  let message = "Something went wrong";
+  res.status(status);
+  res.render("error", { status, message });
+})
+
+app.use(function (req, res, next) {
+  let status = 404;
+  let message = "Sorry can't find that!";
+  res.status(status);
+  res.render("error", { status, message });
+})
 
 
 app.listen(3000, function () {

@@ -1,0 +1,77 @@
+extends base.pug
+block content
+    .center.white.teal-text.darken-4.dash
+        h4
+            strong Dashboard
+    .row
+        .container(style='margin-top: 50px')
+            if user && !user.isRegistered
+                .center
+                    h6.red-text
+                        i.material-icons.prefix error
+                        strong Please complete your registration by providing PIN
+                    include includes/tokenAuthenticationForm
+        .container
+            .col.s12.m5
+                .container.center
+                    .input-field
+                        p You can use the button below to get a PIN, if you don't have one
+                        a.waves-effect.waves-light.btn(href='/get-token') GET PIN
+            .col.s12.m5.push-m2
+                .container.center
+                    form(action='/verify-token', method='POST')
+                        .input-field.col.s12.l6
+                            input(type='hidden', name='_csrf', value=csrf)
+                        .input-field.col.s12.teal-text
+                            input#serial.validate(type='text', name='serial', 
+                            placeholder='enter 16 digit serial number', required, 
+                            pattern='^[0-9]{16}$' title='input a 16 digit serial number')
+                            button.waves-effect.waves-light.btn
+                                | Verify PIN
+
+    .row
+        .container(style='margin-top: 50px')
+            if user && !user.isRegistered
+                .center
+                    h6.red-text
+                        i.material-icons.prefix error
+                        strong Please complete your registration by providing PIN
+                    include includes/tokenAuthenticationForm
+            if user
+                .div
+                    h6 Full name: 
+                        strong !{user.fullName}
+                .div
+                    h6 Institution: 
+                        strong !{institution.institution}
+                .center(style='margin-top: 30px')
+                    h5
+                        strong.teal-text.darken-4 Competitions
+                    .dashboard.col.s12.m5.push-m1
+                        h6.teal-text.darken-4
+                            strong
+                                a(href='/virtual-quiz') Virtual Quiz
+                        hr
+                        h6 Best Score: 
+                            strong.teal-text.darken-4 !{user.virtualQuiz.score || 0}
+                    .dashboard.col.s12.m5.push-m1
+                        h6.teal-text.darken-4
+                            strong
+                                a(href='/scholars-cup') Scholars Cup
+                        hr
+                        h6 Best Score: 
+                            strong.teal-text.darken-4 !{user.scholarsCup.score || 0}
+                    .dashboard.col.s12.m5.push-m1
+                        h6.teal-text.darken-4
+                            strong
+                                a(href='/scholars-bowl') Scholars Bowl
+                        hr
+                        h6 Best Score: 
+                            strong.teal-text.darken-4 !{user.scholarsBowl.score || 0}
+                    .dashboard.col.s12.m5.push-m1
+                        h6.teal-text.darken-4
+                            strong
+                                a(href='/grants') Education Grant
+                        hr
+                        h6 Best Score: 
+                            strong.teal-text.darken-4 !{user.educationGrant.score || 0}

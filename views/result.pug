@@ -1,0 +1,12 @@
+extends base
+block content
+    .row
+        .container
+            .col.s12
+                h5 Your score is !{ score }
+                h5 Correctly answered: !{ correct }
+                    i.material-icons.prefix.teal-text check
+                h5 Wrongly answered: !{ wrong }
+                    i.material-icons.prefix.red-text cancel
+                h5 Total Unanswered: !{ unAnswered }
+                    i.material-icons.prefix

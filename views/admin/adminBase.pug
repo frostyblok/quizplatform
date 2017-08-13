@@ -1,21 +1,21 @@
 doctype
-
 html
     head
         include ../includes/head.pug
-            
+
     body
         header
             nav.teal.darken-4
                 .nav-wrapper.container
-                    a.brand-logo(href='/') Scholar Admin
+                    a.brand-logo(href='/admin') Scholar Admin
                     a.button-collapse(href='#', data-activates='nav-mobile')
                         i.material-icons menu
                     ul.right.hide-on-med-and-down
                         include includes/admin-nav-items.pug
-                    ul#nav-mobile.side-nav
+                    ul#nav-mobile.side-nav.teal.darken-2
                         include includes/admin-nav-items.pug
         main
-            //- != messages('messages', locals)
+            != messages('messages', locals)
             block content
         include ../includes/scripts.pug
+        script(type='text/javascript', src='/js/admin.js')
