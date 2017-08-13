@@ -8,6 +8,8 @@
         .row
             .container.center
                 h5 Add News
+            .input-field.col.s12.l6
+                input(type='hidden', name='_csrf', value=csrf)
             .input-field.col.s12
                 input#title.validate(type='text', name='title' value=title)
                 label(for='title') Title

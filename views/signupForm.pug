@@ -20,6 +20,8 @@ block content
                                 .col.s12.card.materialize-red.white-text
                                     p !{err.msg}
                     .input-field.col.s12.l6
+                        input(type='hidden', name='_csrf', value=csrf)
+                    .input-field.col.s12.l6
                         i.material-icons.prefix email
                         input#email.validate(type='email', name='email', value=email, required, maxlength="100")
                         label(for='email') Email

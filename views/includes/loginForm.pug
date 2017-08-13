@@ -2,6 +2,8 @@ form.col.s12(action='/accounts/login', method='POST')
     .row
         .container.center
             h5 Login
+        .input-field.col.s12.l6
+            input(type='hidden', name='_csrf', value=csrf)
         .input-field.col.s12
             i.material-icons.prefix account_circle
             input#username.validate(type='text', name='username' required)

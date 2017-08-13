@@ -9,6 +9,8 @@ block content
                     form(action=`/admin/institution/${institution._id}/edit`, method='POST')
                         .row
                             .col.s12
+                                .input-field.col.s12.l6
+                                    input(type='hidden', name='_csrf', value=csrf)
                                 .input-field
                                     input#institution.col.s10.validate(type='text' name='institution' value=institution.institution)
                                     label(for='institution') Name

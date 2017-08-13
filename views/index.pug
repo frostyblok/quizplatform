@@ -25,7 +25,8 @@ block content
                     | on a Scholarship scheme. Runner-up goes home with &#x20a6;100,000 and
                     | is also placed on a Scholarship scheme. Interested participants
                     | must make sure they are first registered on this site.
-                    a(href='/accounts/sign-up') (Register here)
+                    if !user
+                        a(href='/accounts/sign-up') (Register here)
                 p
                     | The best 50 participants on the deadline will be shortlisted
                     | for a physical test still on general knowledge, of which the

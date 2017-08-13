@@ -9,7 +9,7 @@ const Token = require("../models/token");
 const helpers = require("../utils/helpers");
 
 
-const getDashBoard = function (req, res) {
+function getDashBoard (req, res) {
   Institution.findById({ _id: req.user.institution },
     function (err, institution) {
       if (err) {
@@ -22,9 +22,7 @@ const getDashBoard = function (req, res) {
 }
 
 
-
-const newsList = function (req, res) {
-  console.log("NEWS",req.user);
+function newsList (req, res) {
   NewsItem.find({}).sort({ _id: -1 }).exec(function (err, news) {
     if (err) {
       req.flash("failure", "Unable to fetch news feed");
@@ -45,8 +43,8 @@ const getQuizAuth = function (req, res) {
   res.render("quizInstruction");
 }
 
-// TODO:
-const handleQuizAuth = function (req, res, next) {
+
+function handleQuizAuth (req, res, next) {
   let redirectTo = req.session.redirectTo;
   let token = req.body.token;
   let user = req.user;
@@ -104,7 +102,7 @@ function setSpent(token) {
   return token;
 }
 
-const tokenRegistration = function (req, res, next) {
+function tokenRegistration (req, res, next) {
   let token = req.body.token;
   req.checkBody('token', 'Please enter a valid 12 digit PIN')
                .matches(/^(\d){12}$/);
@@ -121,13 +119,11 @@ const tokenRegistration = function (req, res, next) {
       req.flash("failure", "An error occured while validating Token");
       res.redirect("/dashboard")
     } else if (token) {
-      console.log("token found");
       User.findByIdAndUpdate(
         { _id: req.user._id },
         { isRegistered: true },
         function ( err, user) {
           if (err) {
-            console.log(err);
             next(err);
             return;
           }
@@ -176,7 +172,7 @@ function getToken(req, res) {
   res.render("tokenForm");
 }
 
-const getQuiz = function (req, res) {
+function getQuiz (req, res) {
   Pack.count().exec(function (err, count) {
     var random = Math.floor(Math.random() * count);
     Pack.findOne().skip(random).populate("questions").exec(
@@ -196,7 +192,7 @@ const getQuiz = function (req, res) {
 }
 
 
-const evaluateQuiz = function (req, res) {
+function evaluateQuiz (req, res) {
   // if user token count >= maxTokenUse take care of things
   // time allowed is 6.5mins + 10secs extra for latency.
   const TIME_ALLOWED = 6.5 * 60 * 1000 + 10 * 1000;
@@ -215,7 +211,6 @@ const evaluateQuiz = function (req, res) {
       {"correctAnswer": 1, _id: 0},
       (err, questions) => {
         if (err) {
-          console.log(err);
           req.flash("error", "Something went wrong");
           res.redirect("/");
           return;
@@ -243,6 +238,7 @@ const evaluateQuiz = function (req, res) {
   }
 }
 
+
 function getCompetitionName(req) {
   let redirectTo = req.session.redirectTo.slice(1);
   let competition;
@@ -263,7 +259,7 @@ function getCompetitionName(req) {
     return competition;
 }
 
-const saveScore = (userId, score, time, competition) => {
+function saveScore (userId, score, time, competition) {
   User.findById({_id: userId}).exec().then((user)=> {
     if (user[competition].score < score) {
       user[competition].score = score;
@@ -280,19 +276,19 @@ const saveScore = (userId, score, time, competition) => {
   }).then((user) => {
     user.save();
   }).catch((err)=> {
-    console.log(err);
+    next(err);
     return;
   })
 }
 
 
-const getRanking = function (req, res) {
+function getRanking (req, res) {
   User.find({institution: req.user.institution})
-      .sort({score: -1, time: 1})
+      .sort({score: -1, time: 1}) // FIXME: reorder sorted fields.
       .limit(50)
       .exec(function (err, users) {
         if (err) {
-          console.log(err);
+          next(err);
         } else {
           res.render('ranking', {users});
         }
@@ -308,22 +304,23 @@ function ranking (req, res) {
 }
 
 function institutionRanking (req, res) {
+  let url = req.url;
   let institutionId = req.user.institution;
   let competition = req.body.competition;
   req.sanitizeBody("competition").trim();
   req.sanitizeBody("competition").escape();
   let selectQuery = {  firstName: 1, surName: 1, username: 1 };
   selectQuery[competition] = 1;
-  let sortQuery = {};
-  sortQuery[competition + '.score'] = 1;
-  sortQuery[competition + '.time'] = -1;
+  selectQuery[competition + '.score'] = 1;
+  selectQuery[competition + '.time'] = 1;
+  let sortQuery = { score: 1, time: -1 };
 
   User.find({ institution: institutionId })
       .select(selectQuery)
       .sort(sortQuery)
       .limit(50)
       .exec().then((users) => {
-        res.render("ranking", {users, competition})
+        res.render("ranking", {users, competition, url})
       })
 }
 

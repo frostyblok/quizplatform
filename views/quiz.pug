@@ -9,6 +9,8 @@ block content
             .col.s12
                 if pack.questions.length
                     form.quizForm(action="/virtual-quiz" method="POST")
+                        .input-field.col.s12.l6
+                            input(type='hidden', name='_csrf', value=csrf)
                         include questionTemplate
                         .col.s12
                             br

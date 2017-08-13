@@ -9,14 +9,14 @@ block content
                         form(action=url method='POST')
                             .row
                                 .col.s12
-                                    p 
+                                    .input-field.col.s12.l6
+                                        input(type='hidden', name='_csrf', value=csrf)
                                     .input-field.col.s12.l6
                                         select#competition(name='competition', required)
                                             option(value='', disabled='', selected='false') Select Category
                                             option(value="educationGrant") Education Grant
                                             option(value="scholarsBowl") Scholars Bowl
                                             option(value="scholarsCup") Scholars Cup
-                                            option(value="virtualQuiz") Virtual Quiz
                                         label(for='competition') Competition
                                     button.btn.waves-effect.waves-light.teal SUBMIT
             div.results
@@ -28,7 +28,7 @@ block content
                                 th Position
                                 th username
                                 th Full Name
-                                if url == 'ranking'
+                                if url == '/ranking'
                                     th Score
                                 else
                                     th Attempts

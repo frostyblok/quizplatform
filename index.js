@@ -13,6 +13,7 @@ const morgan = require('morgan');
 const session = require('express-session');
 const passport = require('passport');
 const uuid = require('uuid');
+const csrf = require('csurf');
 
 const dbConfig = require('./config/db');
 const { ensureAdmin } = require('./utils/middlewares');
@@ -36,7 +37,6 @@ const User = require('./models/user');
 
 // application layer
 const app = express();
-const router = express.Router();
 
 
 // Load view engine
@@ -60,9 +60,9 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // Express Session
 app.use(session({
-    secret: 'secret',
-    saveUninitialized: true,
-    resave: true,
+    secret: 'secret', // COrrect this
+    saveUninitialized: false,
+    resave: false,
 }));
 
 
@@ -84,14 +84,18 @@ app.use(expressValidator({
   }
 }));
 
+
+
+
 // Passport init
 require('./config/passport')(passport);
 app. use(passport.initialize());
 app.use(passport.session());
 
-
 // Connect Flash
 app.use(flash());
+
+// const csrfProtection = csrf();
 
 // set some global variables
 app.use(function (req, res, next) {
@@ -117,6 +121,14 @@ const siteRouter = require('./routes/site');
 app.use('/', siteRouter);
 
 
+// Handle csrf errors
+app.use(function (err, req, res, next) {
+  if (err.code !== 'EBADCSRFTOKEN') return next(err)
+  res.status(403)
+  res.send('form tampered with')
+})
+
+
 app.use(function (err, req, res, next) {
   console.error(err.stack);
   let status = 500;
@@ -126,9 +138,9 @@ app.use(function (err, req, res, next) {
 })
 
 app.use(function (req, res, next) {
-  res.status(404);
   let status = 404;
   let message = "Sorry can't find that!";
+  res.status(status);
   res.render("error", { status, message });
 })
 

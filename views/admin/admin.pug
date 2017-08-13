@@ -13,6 +13,8 @@ block content
                             .row
                                 .col.s12
                                     p Grant Admin Priviledges
+                                    .input-field.col.s12.l6
+                                        input(type='hidden', name='_csrf', value=csrf)
                                     .input-field
                                         input#pack-name.col.s8.validate(type='text',
                                         name='username', placeholder='type a username to grant afmin access')
@@ -26,6 +28,8 @@ block content
                         .row
                             .col.s12
                                 p Create new Question Pack
+                                .input-field.col.s12.l6
+                                    input(type='hidden', name='_csrf', value=csrf)
                                 .input-field
                                     input#pack-name.col.s10.validate(type='text',name='name')
                                     label(for='pack-name', data-error='wrong', data-success='right') Name
@@ -44,6 +48,8 @@ block content
                     form.col.s12(action='/admin/institution', method='POST')
                         .row
                             .col.s12
+                                .input-field.col.s12.l6
+                                    input(type='hidden', name='_csrf', value=csrf)
                                 .input-field
                                     input#institution-name.col.s10.validate(type='text',name='institution')
                                     label(for='institution-name') Name
@@ -57,6 +63,9 @@ block content
                         h5 Tokens
                         form#create-token-form(action='', method='POST')
                             .row
+                                .col.s12
+                                    .input-field.col.s12.l6
+                                        input(type='hidden', name='_csrf', value=csrf)
                                 .col.s12
                                     .input-field
                                         input#total.col.s10.validate(type='number',name='total',placeholder='Total number of tokens' min='1')
@@ -76,6 +85,8 @@ block content
                         .row
                             .col.s12
                                 p Reset Season By Institution
+                                .input-field.col.s12.l6
+                                    input(type='hidden', name='_csrf', value=csrf)
                                 .input-field.col.s12.l6
                                     i.material-icons.prefix school
                                     select#institution(name='institution', required)

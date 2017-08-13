@@ -4,6 +4,7 @@ const passport = require('passport');
 // import route controllers
 const accounts = require('../controllers/accounts');
 
+
 router.get('/login', accounts.getLogin);
 
 router.post('/login',
