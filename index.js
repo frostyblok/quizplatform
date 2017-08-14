@@ -20,7 +20,7 @@ const { ensureAdmin } = require('./utils/middlewares');
 const dbConfig = require('./config/db')[env];
 
 if (dbConfig.use_env_variable) {
-  mongoose.connect(process.env[dbConfig.use_env_variable]);
+  mongoose.connect(MONGO_URI);
 } else {
   mongoose.connect(dbConfig.database);
 }
@@ -150,7 +150,8 @@ app.use(function (req, res, next) {
   res.render("error", { status, message });
 })
 
+const port = parseInt(process.env.PORT, 10) || 3000;
 
-app.listen(3000, function () {
-  console.log('listening on port 3000!')
+app.listen(port, function () {
+  console.log(`listening on port ${port}`);
 });
