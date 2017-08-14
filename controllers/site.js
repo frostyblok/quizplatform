@@ -23,8 +23,6 @@ function getDashBoard (req, res) {
 
 
 function newsList (req, res, next) {
-    res.send("News route working");
-    return;
   NewsItem.find({}).sort({ _id: -1 }).exec(function (err, news) {
     if (err) {
       req.flash("failure", "Unable to fetch news feed");

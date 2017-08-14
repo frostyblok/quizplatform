@@ -14,9 +14,13 @@ const session = require('express-session');
 const passport = require('passport');
 const uuid = require('uuid');
 const csrf = require('csurf');
-const env = process.env.NODE_ENV || 'development';
+const dotenv = require('dotenv');
 
 const { ensureAdmin } = require('./utils/middlewares');
+
+dotenv.config();
+const env = process.env.NODE_ENV || 'development';
+
 const dbConfig = require('./config/db')[env];
 
 

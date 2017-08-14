@@ -38,7 +38,7 @@ const getSignUp = function (req, res, next) {
   Institiution.find({}, function (err, institutions) {
     if (err) {
       console.error(err);
-      next();
+      next(err);
     }
     res.render('signupForm', { institutions });
   })
