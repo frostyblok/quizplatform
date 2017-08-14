@@ -14,13 +14,19 @@ const session = require('express-session');
 const passport = require('passport');
 const uuid = require('uuid');
 const csrf = require('csurf');
+const env = process.env.NODE_ENV || 'development';
 
-const dbConfig = require('./config/db');
 const { ensureAdmin } = require('./utils/middlewares');
+const dbConfig = require('./config/db')[env];
 
+if (dbConfig.use_env_variable) {
+  mongoose.connect(process.env[dbConfig.use_env_variable]);
+} else {
+  mongoose.connect(dbConfig.database);
+}
 
 // database layer
-mongoose.connect(dbConfig.database);
+// mongoose.connect(dbConfig.database);
 const db = mongoose.connection;
 
 db.on('error', function (err) {
@@ -97,7 +103,7 @@ app.use(flash());
 
 // const csrfProtection = csrf();
 
-// set some global variables
+// set some global variables making them available in templates
 app.use(function (req, res, next) {
   res.locals.messages = messages(req, res);
   res.locals.user = req.user || null;
