@@ -20,7 +20,7 @@ const { ensureAdmin } = require('./utils/middlewares');
 const dbConfig = require('./config/db')[env];
 
 if (dbConfig.use_env_variable) {
-  mongoose.connect(MONGO_URI);
+  mongoose.connect(process.env[dbConfig.use_env_variable]);
 } else {
   mongoose.connect(dbConfig.database);
 }
