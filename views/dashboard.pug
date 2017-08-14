@@ -31,12 +31,6 @@ block content
 
     .row
         .container(style='margin-top: 50px')
-            if user && !user.isRegistered
-                .center
-                    h6.red-text
-                        i.material-icons.prefix error
-                        strong Please complete your registration by providing PIN
-                    include includes/tokenAuthenticationForm
             if user
                 .div
                     h6 Full name: 
