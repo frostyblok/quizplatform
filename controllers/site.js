@@ -22,21 +22,21 @@ function getDashBoard (req, res) {
 }
 
 
-function newsList (req, res) {
+function newsList (req, res, next) {
   NewsItem.find({}).sort({ _id: -1 }).exec(function (err, news) {
     if (err) {
       req.flash("failure", "Unable to fetch news feed");
-      res.render("news");
+      next(err);
     } else {
       res.render("news", { news });
     }
   })
 };
 
-// TODO:
+
 const getQuizAuth = function (req, res) {
   if (!req.user || !req.user.isRegistered) {
-    req.flash("failure", "Complete your registeration in order to compete");
+    req.flash("failure", "Complete your registration in order to compete");
     res.redirect("/dashboard");
     return;
   }

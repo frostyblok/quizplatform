@@ -36,7 +36,10 @@ const logout = function (req, res) {
 
 const getSignUp = function (req, res, next) {
   Institiution.find({}, function (err, institutions) {
-    if (err) console.error(err);
+    if (err) {
+      console.error(err);
+      next();
+    }
     res.render('signupForm', { institutions });
   })
 }

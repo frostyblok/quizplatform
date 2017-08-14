@@ -19,14 +19,14 @@ const env = process.env.NODE_ENV || 'development';
 const { ensureAdmin } = require('./utils/middlewares');
 const dbConfig = require('./config/db')[env];
 
+
+// database layer
 if (dbConfig.use_env_variable) {
   mongoose.connect(process.env[dbConfig.use_env_variable]);
 } else {
   mongoose.connect(dbConfig.database);
 }
 
-// database layer
-// mongoose.connect(dbConfig.database);
 const db = mongoose.connection;
 
 db.on('error', function (err) {
