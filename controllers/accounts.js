@@ -16,7 +16,7 @@ const Serial = require('../models/serial');
 
 
 const getLogin = function (req, res, next) {
-  res.redirect('/')
+  res.render('login');
 }
 
 const handleLogin = function (req, res, next) {

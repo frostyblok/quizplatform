@@ -18,7 +18,7 @@ function ensureLogin (req, res, next) {
     req.session["redirectTo"] = req.url;
     req.flash("message", "Login to proceed");
     res.status(401);
-    res.redirect('/accounts/login');
+    res.redirect('/');
   } else {
     next();
   }

@@ -172,6 +172,7 @@ function getToken(req, res) {
   res.render("tokenForm");
 }
 
+
 function getQuiz (req, res) {
   Pack.count().exec(function (err, count) {
     var random = Math.floor(Math.random() * count);
