@@ -85,7 +85,12 @@ function handleQuizAuth (req, res, next) {
     }
     if (!token.user && token.currentUse === 0 && !token.spent) {
       token.user = user._id;
+      token.currentUse++;
+      setSpent(token);
       token.save();
+      req.session["quizReady"] = true;
+      res.redirect(redirectTo);
+      return;
     }
     if (user._id.toString() === token.user.toString() &&
         token.maxUse > token.currentUse
@@ -193,9 +198,8 @@ function getQuiz (req, res) {
       function (err, pack) {
         if (err) {
           req.flash("failure", "Unable to fetch quiz");
-          res.render("index");
+          res.redirect("/dashboard");
         } else {
-          req.session["quizReady"] = false;
           req.session["startTime"] = Date.now();
           req.session["pack"] = pack.name;
           res.render("quiz", { pack });
@@ -207,6 +211,11 @@ function getQuiz (req, res) {
 
 
 function evaluateQuiz (req, res) {
+  if (!req.session["quizReady"]) {
+    req.flash('error', 'invalid submission');
+    res.redirect('/dashboard');
+  }
+  req.session["quizReady"] = false;
   // if user token count >= maxTokenUse take care of things
   // time allowed is 6.5mins + 10secs extra for latency.
   const TIME_ALLOWED = 6.5 * 60 * 1000 + 10 * 1000;
@@ -218,7 +227,7 @@ function evaluateQuiz (req, res) {
   // delete req.session.pack;
   if (timeTaken > TIME_ALLOWED) {
     req.flash("failure", "Invalid submission. You submitted too late");
-    res.redirect("/");
+    res.redirect("/dashboard");
   } else {
     Question.find(
       {pack: packName},
@@ -226,7 +235,7 @@ function evaluateQuiz (req, res) {
       (err, questions) => {
         if (err) {
           req.flash("error", "Something went wrong");
-          res.redirect("/");
+          res.redirect("/dashboard");
           return;
         } else {
           let score = 0;
@@ -244,13 +253,14 @@ function evaluateQuiz (req, res) {
           let unAnswered = questions.length - (correct + wrong);
           score = score.toFixed(1);
           const competition = getCompetitionName(req, res);
-          saveScore(req.user._id, score, timeTaken, competition);
+          saveScore(req.user._id, score, timeTaken, competition, res);
           res.render("result", { score, correct, wrong, unAnswered })
         }
       }
     )
   }
 }
+
 
 
 function getCompetitionName(req, res) {
@@ -277,7 +287,7 @@ function getCompetitionName(req, res) {
     return competition;
 }
 
-function saveScore (userId, score, time, competition) {
+function saveScore (userId, score, time, competition, res) {
   User.findById({_id: userId}).exec().then((user)=> {
     if (user[competition].score < score) {
       user[competition].score = score;
@@ -294,7 +304,8 @@ function saveScore (userId, score, time, competition) {
   }).then((user) => {
     user.save();
   }).catch((err)=> {
-    next(err);
+    req.flash('error', 'An error occured. Unable to save quiz results');
+    res.redirect('/dashboard');
     return;
   })
 }

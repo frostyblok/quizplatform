@@ -4,6 +4,7 @@ $(document).ready(function () {
   $("select").material_select();
 
   countDown();
+  uncheckRadio();
 });
 
 
@@ -42,4 +43,15 @@ function countDown() {
 
 function submitQuiz () {
   $(".quizForm").submit();
+}
+
+function uncheckRadio () {
+  const radios = document.querySelectorAll('input[type="radio"]');
+  radios.forEach(function(radio, i) {
+    radio.onclick = function (e) {
+      if (e.ctrlKey) {
+        this.checked = false;
+      }
+    }
+  });
 }
