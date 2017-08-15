@@ -230,7 +230,7 @@ function evaluateQuiz (req, res) {
           }
           let unAnswered = questions.length - (correct + wrong);
           score = score.toFixed(1);
-          const competition = getCompetitionName(req);
+          const competition = getCompetitionName(req, res);
           saveScore(req.user._id, score, timeTaken, competition);
           res.render("result", { score, correct, wrong, unAnswered })
         }
@@ -241,8 +241,9 @@ function evaluateQuiz (req, res) {
 
 
 function getCompetitionName(req, res) {
-  if (!req.redirectTo) {
+  if (!req.session.redirectTo) {
     res.redirect('/dashboard');
+    return;
   }
   let redirectTo = req.session.redirectTo.slice(1);
   let competition;
