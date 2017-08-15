@@ -240,7 +240,10 @@ function evaluateQuiz (req, res) {
 }
 
 
-function getCompetitionName(req) {
+function getCompetitionName(req, res) {
+  if (!req.redirectTo) {
+    res.redirect('/dashboard');
+  }
   let redirectTo = req.session.redirectTo.slice(1);
   let competition;
   switch (redirectTo) {
