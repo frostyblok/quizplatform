@@ -2,6 +2,7 @@ const Institution = require("../models/institution");
 const NewsItem = require("../models/news");
 const Pack = require("../models/pack");
 const Question = require("../models/question");
+const Faq = require("../models/faq");
 
 const User = require("../models/user");
 const Token = require("../models/token");
@@ -28,7 +29,19 @@ function newsList (req, res, next) {
       req.flash("failure", "Unable to fetch news feed");
       next(err);
     } else {
-      res.render("news", { news });
+      res.render("news", { news, title: "Latest News" });
+    }
+  })
+};
+
+
+function faqs (req, res, next) {
+  Faq.find({}).exec(function (err, faqs) {
+    if (err) {
+      req.flash("failure", "Unable to fetch news faqs");
+      next(err);
+    } else {
+      res.render("faqs", { faqs, title: "FAQs" });
     }
   })
 };
@@ -351,6 +364,7 @@ function topApplicants (req, res) {
 
 module.exports = {
   getDashBoard,
+  faqs,
   newsList,
   getRanking,
   getQuizAuth,

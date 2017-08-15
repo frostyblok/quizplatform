@@ -8,6 +8,7 @@ router.get('/dashboard', ensureLogin, siteController.getDashBoard);
 router.post('/dashboard', ensureLogin, siteController.tokenRegistration);
 
 router.get('/news', siteController.newsList);
+router.get('/faqs', siteController.faqs);
 
 router.get('/virtual-quiz',
             ensureLogin,

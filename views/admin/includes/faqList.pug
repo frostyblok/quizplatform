@@ -1,0 +1,21 @@
+.col.s12
+    h3.center !{ title }
+    hr
+    if faqs
+        each item in faqs
+            .col.s12
+                if user && user.isStaff
+                    .col.s4
+                        a.control.edit-link.btn.waves-effect.waves-light.teal.darken-4(
+                        href=`/admin/faqs/${item._id}/edit` data-id=item._id data-type='faqs')
+                            i.material-icons(data-id=item._id data-type='faqs') edit
+                        a.control.delete-link.btn.waves-effect.waves-light.red.darken-4(
+                        href='#' data-id=item._id data-type='faqs')
+                            i.material-icons(data-id=item._id data-type='faqs') delete
+            .col.s12
+                h5 Question: !{item.question}
+            .col.s12
+                p Answer: !{item.answer}
+            hr
+    else
+        p Nothing here for now

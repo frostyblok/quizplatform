@@ -5,6 +5,7 @@ const async = require('async');
 const Pack = require("../models/pack");
 const Question = require("../models/question");
 const NewsItem = require("../models/news");
+const Faq = require("../models/faq");
 
 const User = require("../models/user");
 const Institution = require("../models/institution");
@@ -423,6 +424,111 @@ function deletePack (req, res) {
 }
 
 
+// Faqs
+function listFaqs (req, res) {
+  Faq.find({}).exec(function (err, faqs) {
+    if (err) {
+      req.flash("failure", "Unable to fetch list items");
+      res.render("/admin");
+    } else {
+      res.render("admin/faq", { faqs });
+    }
+  })
+};
+
+function addFaq (req, res) {
+  const question = req.body.question;
+  const answer = req.body.answer;
+
+  req.checkBody("question", "Please provide question").notEmpty();
+  req.checkBody("answer", "Please provide answer").notEmpty();
+
+  req.sanitizeBody("question").trim();
+  req.sanitizeBody("question").escape();
+  req.sanitizeBody("answer").trim();
+  req.sanitizeBody("answer").escape();
+
+  const errors = req.validationErrors();
+  if (errors) {
+    req.flash("error", errors[0].msg);
+    res.redirect("/admin/faqs");
+    return;
+  }
+
+  let faq = new Faq({ question, answer });
+  faq.save(function(err, faq) {
+    if (err) {
+      req.flash("failure","Unable to save faq item");
+      res.redirect("/admin/faqs");
+      return;
+    }
+    req.flash("success", "faq item saved");
+    res.redirect("/admin/faqs");
+  })
+}
+
+
+function deleteFaq (req, res) {
+  const id = req.params.id;
+  Faq.findByIdAndRemove(id, function (err, done) {
+    if (err){
+      req.flash("failure", "Unable to delete item")
+      res.render("/admin");
+      return;
+    }
+    res.send("Faq deleted");
+  });
+}
+
+
+function getEditFaq(req, res) {
+  const _id = req.params.id;
+  Faq.findOne({ _id }, function (err, faq) {
+    if (err) {
+      req.flash("failure", "Failed to fetch FAQ");
+    }
+    else
+      res.render("admin/editFaq", { faq });
+  });
+}
+
+function editFaq (req, res, next) {
+  const _id = req.params.id;
+  let question = req.body.question;
+  let answer = req.body.answer;
+
+  req.checkBody("question", "Question cannot be empty").notEmpty();
+  req.sanitizeBody("question").trim();
+  req.sanitizeBody("question").escape();
+  req.checkBody("answer", "News content cannot be empty").notEmpty();
+  req.sanitizeBody("answer").trim();
+  req.sanitizeBody("answer").escape();
+
+  const errors = req.validationErrors();
+  if (errors) {
+    req.flash("error", errors[0].msg)
+    res.redirect("/admin/faqs");
+    return;
+  }
+
+  Faq.findOneAndUpdate({ _id },
+    { question, answer },
+    function (err, faq) {
+      if (err) {
+        req.flash("failure", "Could not update FAQ");
+        res.redirect("/admin/faqs");
+      }
+      else {
+        req.flash("success", "FAQ successfully edited");
+        res.redirect("/admin/faqs");
+      }
+    }
+  );
+}
+
+
+
+
 
 // News Section
 function listNews (req, res) {
@@ -698,6 +804,11 @@ module.exports = {
   getEditQuestion,
   editQuestion,
   deleteQuestion,
+  listFaqs,
+  addFaq,
+  getEditFaq,
+  editFaq,
+  deleteFaq,
   listNews,
   addNews,
   getEditNews,

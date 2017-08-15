@@ -124,8 +124,7 @@ app.use('/accounts', accountRouter);
 
 const adminRouter = require('./routes/admin');
 
-// app.use('/admin', ensureAdmin, adminRouter);
-app.use('/admin', adminRouter);
+app.use('/admin', ensureAdmin, adminRouter);
 
 const siteRouter = require('./routes/site');
 app.use('/', siteRouter);

@@ -22,6 +22,14 @@ router.get('/news/:id/edit', admin.getEditNews);
 router.post('/news/:id/edit', admin.editNews);
 router.delete('/news/:id', admin.deleteNews);
 
+// faqs routes
+router.get('/faqs', admin.listFaqs);
+router.post('/faqs', admin.addFaq);
+router.get('/faqs/:id/edit', admin.getEditFaq);
+router.post('/faqs/:id/edit', admin.editFaq);
+router.delete('/faqs/:id', admin.deleteFaq);
+
+
 router.get('/institution', admin.getInstitutions);
 router.post('/institution', admin.addInstitution);
 router.get('/institution/:id/edit', admin.getEditInstitution);
