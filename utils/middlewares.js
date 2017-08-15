@@ -16,6 +16,7 @@ function ensureAdmin (req, res, next) {
 function ensureLogin (req, res, next) {
   if(!req.user) {
     req.session["redirectTo"] = req.url;
+    req.flash("message", "Login to proceed");
     res.status(401);
     res.redirect('/accounts/login');
   } else {

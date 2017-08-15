@@ -51,8 +51,8 @@ router.post('/verify-token', siteController.verifyToken);
 router.get('/get-token', ensureLogin, siteController.getToken);
 router.post('/get-token', ensureLogin, siteController.getToken);
 
-router.post('/ranking', ensureLogin, siteController.institutionRanking);
 router.get('/ranking', ensureLogin, siteController.ranking);
+router.post('/ranking', ensureLogin, siteController.institutionRanking);
 
 router.get('/top-applicants', ensureLogin, siteController.ranking);
 router.post('/top-applicants', ensureLogin, siteController.topApplicants);
