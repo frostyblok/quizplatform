@@ -8,7 +8,7 @@ block content
         .container
             .col.s12
                 if pack.questions.length
-                    form.quizForm(action="/virtual-quiz" method="POST")
+                    form.quizForm(action=url method="POST")
                         .input-field.col.s12.l6
                         include questionTemplate
                         .col.s12

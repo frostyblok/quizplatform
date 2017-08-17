@@ -200,9 +200,11 @@ function getQuiz (req, res) {
           req.flash("failure", "Unable to fetch quiz");
           res.redirect("/dashboard");
         } else {
+          let url = req.session["redirectTo"];
+          req.session["quizReady"] = false;
           req.session["startTime"] = Date.now();
           req.session["pack"] = pack.name;
-          res.render("quiz", { pack });
+          res.render("quiz", { pack, url });
         }
       }
     );
@@ -211,11 +213,11 @@ function getQuiz (req, res) {
 
 
 function evaluateQuiz (req, res) {
-  if (!req.session["quizReady"]) {
-    req.flash('error', 'invalid submission');
-    res.redirect('/dashboard');
-  }
-  req.session["quizReady"] = false;
+  // if (!req.session["quizReady"]) {
+  //   req.flash('error', 'invalid submission');
+  //   res.redirect('/dashboard');
+  // }
+  // req.session["quizReady"] = false;
   // if user token count >= maxTokenUse take care of things
   // time allowed is 6.5mins + 10secs extra for latency.
   const TIME_ALLOWED = 6.5 * 60 * 1000 + 10 * 1000;
@@ -311,20 +313,6 @@ function saveScore (userId, score, time, competition, res) {
 }
 
 
-function getRanking (req, res) {
-  User.find({institution: req.user.institution})
-      .sort({score: -1, time: 1}) // FIXME: reorder sorted fields.
-      .limit(50)
-      .exec(function (err, users) {
-        if (err) {
-          next(err);
-        } else {
-          res.render('ranking', {users});
-        }
-      });
-}
-
-
 function ranking (req, res) {
   let url = req.url;
   Institution.find({}).exec().then((institutions) => {
@@ -342,7 +330,10 @@ function institutionRanking (req, res) {
   selectQuery[competition] = 1;
   selectQuery[competition + '.score'] = 1;
   selectQuery[competition + '.time'] = 1;
-  let sortQuery = { score: 1, time: -1 };
+  
+  let sortQuery = {};
+  sortQuery[competition + '.score'] = -1;
+  sortQuery[competition + '.time'] = 1;
 
   User.find({ institution: institutionId })
       .select(selectQuery)
@@ -362,7 +353,9 @@ function topApplicants (req, res) {
   req.sanitizeBody("competition").escape();
   let selectQuery = {  firstName: 1, surName: 1, username: 1 };
   selectQuery[competition + '.attempts'] = 1;
-  let sortQuery = { attempts: -1 };
+
+  let sortQuery = {};
+  sortQuery[competition + '.attempts'] = -1;
 
   User.find({ institution: institutionId })
       .select(selectQuery)
@@ -377,7 +370,6 @@ module.exports = {
   getDashBoard,
   faqs,
   newsList,
-  getRanking,
   getQuizAuth,
   handleQuizAuth,
   tokenRegistration,
