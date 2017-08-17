@@ -301,20 +301,6 @@ function saveScore (userId, score, time, competition) {
 }
 
 
-function getRanking (req, res) {
-  User.find({institution: req.user.institution})
-      .sort({score: -1, time: 1}) // FIXME: reorder sorted fields.
-      .limit(50)
-      .exec(function (err, users) {
-        if (err) {
-          next(err);
-        } else {
-          res.render('ranking', {users});
-        }
-      });
-}
-
-
 function ranking (req, res) {
   let url = req.url;
   Institution.find({}).exec().then((institutions) => {
@@ -332,7 +318,10 @@ function institutionRanking (req, res) {
   selectQuery[competition] = 1;
   selectQuery[competition + '.score'] = 1;
   selectQuery[competition + '.time'] = 1;
-  let sortQuery = { score: 1, time: -1 };
+  
+  let sortQuery = {};
+  sortQuery[competition + '.score'] = -1;
+  sortQuery[competition + '.time'] = 1;
 
   User.find({ institution: institutionId })
       .select(selectQuery)
@@ -352,7 +341,9 @@ function topApplicants (req, res) {
   req.sanitizeBody("competition").escape();
   let selectQuery = {  firstName: 1, surName: 1, username: 1 };
   selectQuery[competition + '.attempts'] = 1;
-  let sortQuery = { attempts: -1 };
+
+  let sortQuery = {};
+  sortQuery[competition + '.attempts'] = -1;
 
   User.find({ institution: institutionId })
       .select(selectQuery)
@@ -367,7 +358,7 @@ module.exports = {
   getDashBoard,
   faqs,
   newsList,
-  getRanking,
+  // getRanking,
   getQuizAuth,
   handleQuizAuth,
   tokenRegistration,
