@@ -38,6 +38,7 @@ function isRegistered (req, res, next) {
 }
 
 function checkToken (req, res, next) {
+  console.log("checking token ++++++++++++++++++++++++++++++++++++")
   req.session["redirectTo"] = req.url;
   if (req.session.quizReady) {
     next();

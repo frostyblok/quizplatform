@@ -195,10 +195,11 @@ function getQuiz (req, res) {
           req.flash("failure", "Unable to fetch quiz");
           res.render("index");
         } else {
+          let url = req.session["redirectTo"];
           req.session["quizReady"] = false;
           req.session["startTime"] = Date.now();
           req.session["pack"] = pack.name;
-          res.render("quiz", { pack });
+          res.render("quiz", { pack, url });
         }
       }
     );
