@@ -153,6 +153,10 @@ footer p, footer ul {
     padding: 5px;
 }
 
+.bold {
+    font-weight: 900;
+}
+
 
 #timer {
     color: white;

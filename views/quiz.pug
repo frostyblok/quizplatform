@@ -8,6 +8,7 @@ block content
         .container
             .col.s12
                 if pack.questions.length
+                    h6.bold To deselect an option, hold the 'Ctrl/Cmd' key and click
                     form.quizForm(action=url method="POST")
                         .input-field.col.s12.l6
                         include questionTemplate
