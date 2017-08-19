@@ -107,8 +107,9 @@ function handleQuizAuth (req, res, next) {
       req.flash("failure", "This PIN has been used by another user");
       res.redirect("/dashboard");
     }
-  }).catch((err) =>{
-    res.redirect("/dashboard", { errors })
+  }).catch((err) => {
+    req.flash("error", errors[0].msg)
+    res.redirect("/dashboard")
   })
 }
 
@@ -201,7 +202,6 @@ function getQuiz (req, res) {
           res.redirect("/dashboard");
         } else {
           let url = req.session["redirectTo"];
-          req.session["quizReady"] = false;
           req.session["startTime"] = Date.now();
           req.session["pack"] = pack.name;
           res.render("quiz", { pack, url });
@@ -213,11 +213,15 @@ function getQuiz (req, res) {
 
 
 function evaluateQuiz (req, res) {
-  // if (!req.session["quizReady"]) {
-  //   req.flash('error', 'invalid submission');
-  //   res.redirect('/dashboard');
-  // }
-  // req.session["quizReady"] = false;
+  console.log('================= evaluating Quiz =====================')
+  if (!req.session["quizReady"]) {
+    console.log('================= Invalid submission here =====================')
+    req.flash('error', 'invalid submission');
+    res.redirect('/dashboard');
+    return;
+  }
+  req.session["quizReady"] = false;
+  console.log('++++++++++++++', req.session.quizReady, '============')
   // if user token count >= maxTokenUse take care of things
   // time allowed is 6.5mins + 10secs extra for latency.
   const TIME_ALLOWED = 6.5 * 60 * 1000 + 10 * 1000;
