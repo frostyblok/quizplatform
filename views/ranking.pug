@@ -9,16 +9,16 @@ block content
                         form(action=url method='POST')
                             .row
                                 .col.s12
-                                    .input-field.col.s12.l6
+                                    .input-field.col.s12.l8
                                         input(type='hidden', name='_csrf', value=csrf)
-                                    .input-field.col.s12.l6
+                                    .input-field.col.s12.l8
                                         select#competition.browser-default(name='competition', required)
-                                            option(value='', disabled='', selected='false') Select Category
+                                            option(value='', disabled='', selected='false') Select Competition
                                             option(value="educationGrant") Education Grant
                                             option(value="scholarsBowl") Scholars Bowl
                                             option(value="scholarsCup") Scholars Cup
-                                        label(for='competition') Competition
-                                    button.btn.waves-effect.waves-light.teal SUBMIT
+                                        p
+                                            button.btn.waves-effect.waves-light.teal SUBMIT
             div.results
                 if users
                     h5.center Top 50
