@@ -18,7 +18,6 @@ block content
                                     .input-field
                                         input#pack-name.col.s8.validate(type='text',
                                         name='username', placeholder='type a username to grant afmin access')
-                                            //- label(for='pack-name') Name
                                         button.col.s4.btn.waves-effect.waves-light.teal Submit
             .admin-section
                 .container
@@ -93,9 +92,8 @@ block content
                                 .input-field.col.s12.l6
                                     input(type='hidden', name='_csrf', value=csrf)
                                 .input-field.col.s12.l6
-                                    i.material-icons.prefix school
                                     select#institution.browser-default(name='institution', required)
                                         option(value='', disabled='', selected='false') Select Institution
                                         each institution in institutions
                                             option(value=institution.institution) #{institution.institution}
-                                button.btn.waves-effect.waves-light.teal RESET
+                                    button.btn.waves-effect.waves-light.teal RESET
