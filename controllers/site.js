@@ -213,15 +213,12 @@ function getQuiz (req, res) {
 
 
 function evaluateQuiz (req, res) {
-  console.log('================= evaluating Quiz =====================')
   if (!req.session["quizReady"]) {
-    console.log('================= Invalid submission here =====================')
     req.flash('error', 'invalid submission');
     res.redirect('/dashboard');
     return;
   }
   req.session["quizReady"] = false;
-  console.log('++++++++++++++', req.session.quizReady, '============')
   // if user token count >= maxTokenUse take care of things
   // time allowed is 6.5mins + 10secs extra for latency.
   const TIME_ALLOWED = 6.5 * 60 * 1000 + 10 * 1000;
