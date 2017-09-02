@@ -13,7 +13,8 @@ block content
             form.col.s12.l6.offset-l3(action='/accounts/sign-up', method='POST')
                 .row
                     .center
-                        h4 Sign Up for a free account
+                        h4
+                            strong Sign Up for a free account
                     #errors
                         if errors
                             each err in errors
@@ -34,6 +35,7 @@ block content
                         input#username.validate(type='text', name='username', value=username, required, minlength="8", maxlength="60")
                         label(for='username') Username
                     .input-field.col.s12
+                        p Sex
                         input#male.validate(type='radio', name='sex' value='male', required)
                         label(for='male') male
                         input#female.validate(type='radio', name='sex' value='female', required)

@@ -3,10 +3,27 @@ block content
     .row
         .container
             .col.s12
-                h5 Your score is !{ score }
-                h5 Correctly answered: !{ correct }
-                    i.material-icons.prefix.teal-text check
-                h5 Wrongly answered: !{ wrong }
-                    i.material-icons.prefix.red-text cancel
-                h5 Total Unanswered: !{ unAnswered }
-                    i.material-icons.prefix
+                h6.blue-text Your score is 
+                    strong !{ score }
+                h6.green-text Correctly answered: 
+                    strong !{ correct }
+                h6.red-text Wrongly answered: 
+                    strong !{ wrong }
+                h6 Total Unanswered: 
+                    strong !{ unAnswered }
+            .col.s12
+                if questions
+                    h5.center
+                        strong Review
+
+                    each question, index in questions
+                        .col.s12
+                            p
+                                strong Question #{index + 1}. 
+                                | #{question.question}
+                            p
+                                strong.green-text Correct Answer: 
+                                span #{question.correctAnswer}
+                            p 
+                                strong.blue-text Your Answer: 
+                                span #{answers[index]}
