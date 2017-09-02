@@ -89,11 +89,12 @@ block content
                         .row
                             .col.s12
                                 p Reset Season By Institution
-                                .input-field.col.s12.l6
+                                .input-field.col.s12.l8
                                     input(type='hidden', name='_csrf', value=csrf)
-                                .input-field.col.s12.l6
+                                .input-field.col.s12.l8
                                     select#institution.browser-default(name='institution', required)
                                         option(value='', disabled='', selected='false') Select Institution
                                         each institution in institutions
                                             option(value=institution.institution) #{institution.institution}
-                                button.btn.waves-effect.waves-light.teal RESET
+                                    p
+                                        button.btn.waves-effect.waves-light.teal RESET
