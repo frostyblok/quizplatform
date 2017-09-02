@@ -35,11 +35,12 @@ block content
                         input#username.validate(type='text', name='username', value=username, required, minlength="8", maxlength="60")
                         label(for='username') Username
                     .input-field.col.s12
-                        p Sex
-                        input#male.validate(type='radio', name='sex' value='male', required)
-                        label(for='male') male
-                        input#female.validate(type='radio', name='sex' value='female', required)
-                        label(for='female') female
+                        fieldset
+                            legend Sex:
+                            input#male.validate(type='radio', name='sex' value='male', required)
+                            label(for='male') male
+                            input#female.validate(type='radio', name='sex' value='female', required)
+                            label(for='female') female
                     .input-field.col.s12
                         input#password.validate(type='password', name='password', required, minlength="8", maxlength="60", title="must be at leat 8 characters long")
                         label(for='password') Password
