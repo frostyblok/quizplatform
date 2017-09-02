@@ -153,7 +153,7 @@ app.use(function (req, res, next) {
   res.render("error", { status, message });
 })
 
-const port = parseInt(process.env.PORT, 10) || 3000;
+const port = parseInt(process.env.PORT, 10) || 5000;
 
 app.listen(port, function () {
   console.log(`listening on port ${port}`);

@@ -234,7 +234,7 @@ function evaluateQuiz (req, res) {
   } else {
     Question.find(
       {pack: packName},
-      {"correctAnswer": 1, _id: 0},
+      {"correctAnswer": 1, "question": 1, _id: 0},
       (err, questions) => {
         if (err) {
           req.flash("error", "Something went wrong");
@@ -244,7 +244,7 @@ function evaluateQuiz (req, res) {
           let score = 0;
           let correct = 0;
           let wrong = 0;
-          for (var i in req.body) {
+          for (let i in req.body) {
             if (req.body[i] === questions[i].correctAnswer) {
               ++score;
               ++correct;
@@ -256,8 +256,8 @@ function evaluateQuiz (req, res) {
           let unAnswered = questions.length - (correct + wrong);
           score = score.toFixed(1);
           const competition = getCompetitionName(req, res);
-          saveScore(req.user._id, score, timeTaken, competition, res);
-          res.render("result", { score, correct, wrong, unAnswered })
+          saveScore(req, res, score, timeTaken, competition);
+          res.render("result", { score, correct, wrong, unAnswered, questions, answers: req.body });
         }
       }
     )
@@ -290,8 +290,8 @@ function getCompetitionName(req, res) {
     return competition;
 }
 
-function saveScore (userId, score, time, competition, res) {
-  User.findById({_id: userId}).exec().then((user)=> {
+function saveScore (req, res, score, time, competition) {
+  User.findById({_id: req.user._id}).exec().then((user)=> {
     if (user[competition].score < score) {
       user[competition].score = score;
       if (user[competition].time === 0 || user[competition].time > time) {
@@ -331,7 +331,7 @@ function institutionRanking (req, res) {
   selectQuery[competition] = 1;
   selectQuery[competition + '.score'] = 1;
   selectQuery[competition + '.time'] = 1;
-  
+
   let sortQuery = {};
   sortQuery[competition + '.score'] = -1;
   sortQuery[competition + '.time'] = 1;
