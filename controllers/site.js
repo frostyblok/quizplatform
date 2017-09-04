@@ -262,7 +262,7 @@ function evaluateQuiz (req, res) {
   } else {
     Question.find(
       {pack: packName},
-      {"correctAnswer": 1, "question": 1, _id: 0},
+      {"correctAnswer": 1, "question": 1},
       (err, questions) => {
         if (err) {
           req.flash("error", "Something went wrong");
@@ -272,20 +272,27 @@ function evaluateQuiz (req, res) {
           let score = 0;
           let correct = 0;
           let wrong = 0;
-          for (let i in req.body) {
-            if (req.body[i] === questions[i].correctAnswer) {
-              ++score;
-              ++correct;
-            } else {
-              score -= 0.4;
-              ++wrong;
+          let answers = req.body;
+          for (let id in answers) {
+            for (let i in questions) {
+              let question = questions[i];
+              if (question._id.toString() === id) {
+                if (answers[id] === question.correctAnswer) {
+                   ++score;
+                  ++correct;
+                  break;
+                } else {
+                  score -= 0.4;
+                  ++wrong;
+                }
+              }
             }
           }
           let unAnswered = questions.length - (correct + wrong);
           score = score.toFixed(1);
           const competition = getCompetitionName(req, res);
           saveScore(req, res, score, timeTaken, competition);
-          res.render("result", { score, correct, wrong, unAnswered, questions, answers: req.body });
+          res.render("result", { score, correct, wrong, unAnswered, questions, answers });
         }
       }
     )
