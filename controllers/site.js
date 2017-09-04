@@ -1,3 +1,6 @@
+const dotenv = require('dotenv');
+dotenv.config();
+
 const Institution = require("../models/institution");
 const NewsItem = require("../models/news");
 const Pack = require("../models/pack");
@@ -8,6 +11,8 @@ const User = require("../models/user");
 const Token = require("../models/token");
 
 const helpers = require("../utils/helpers");
+
+const Transaction = require('../models/transaction');
 
 
 function getDashBoard (req, res) {
@@ -187,28 +192,51 @@ function verifyToken (req, res) {
 }
 
 
-function getToken(req, res) {
+function getToken (req, res) {
   res.render("tokenForm");
 }
 
 
+function purchaseToken (req, res) {
+  req.flash("success", "check your email for token");
+  res.redirect('/dashboard');
+}
+
+
 function getQuiz (req, res) {
-  Pack.count().exec(function (err, count) {
-    var random = Math.floor(Math.random() * count);
-    Pack.findOne().skip(random).populate("questions").exec(
+  if (req.session.pack && req.session.startTime) {
+    Pack.findOne({ name: req.session.pack }).populate("questions")
+    .sort({ _id: 'asc' }).exec(
       function (err, pack) {
         if (err) {
           req.flash("failure", "Unable to fetch quiz");
           res.redirect("/dashboard");
+          return;
         } else {
           let url = req.session["redirectTo"];
-          req.session["startTime"] = Date.now();
-          req.session["pack"] = pack.name;
           res.render("quiz", { pack, url });
+          return;
         }
       }
     );
-  })
+  } else {
+    Pack.count().exec(function (err, count) {
+      var random = Math.floor(Math.random() * count);
+      Pack.findOne().skip(random).populate("questions").sort({ _id: 'asc' }).exec(
+        function (err, pack) {
+          if (err) {
+            req.flash("failure", "Unable to fetch quiz");
+            res.redirect("/dashboard");
+          } else {
+            let url = req.session["redirectTo"];
+            req.session["startTime"] = Date.now();
+            req.session["pack"] = pack.name;
+            res.render("quiz", { pack, url });
+          }
+        }
+      );
+    });
+  }
 }
 
 
@@ -263,7 +291,6 @@ function evaluateQuiz (req, res) {
     )
   }
 }
-
 
 
 function getCompetitionName(req, res) {
@@ -375,6 +402,7 @@ module.exports = {
   handleQuizAuth,
   tokenRegistration,
   getToken,
+  purchaseToken,
   getQuiz,
   evaluateQuiz,
   verifyToken,
