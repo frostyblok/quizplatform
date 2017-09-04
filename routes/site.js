@@ -50,7 +50,7 @@ router.post('/quiz-auth', siteController.handleQuizAuth);
 router.post('/verify-token', siteController.verifyToken);
 
 router.get('/get-token', ensureLogin, siteController.getToken);
-router.post('/get-token', ensureLogin, siteController.getToken);
+router.post('/get-token', ensureLogin, siteController.purchaseToken);
 
 router.get('/ranking', ensureLogin, siteController.ranking);
 router.post('/ranking', ensureLogin, siteController.institutionRanking);

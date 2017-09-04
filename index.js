@@ -132,9 +132,12 @@ app.use('/', siteRouter);
 
 // Handle csrf errors
 app.use(function (err, req, res, next) {
-  if (err.code !== 'EBADCSRFTOKEN') return next(err)
-  res.status(403)
-  res.send('form tampered with')
+  if (err.code !== 'EBADCSRFTOKEN') {
+    return next(err);
+  } else {
+    res.status(403);
+    res.send('form tampered with');    
+  }
 })
 
 
